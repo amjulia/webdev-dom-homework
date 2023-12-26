@@ -36,7 +36,7 @@ for (const likeButton of likeButtons) {
 
     likeButton.addEventListener("click", () => {
       const index = likeButton.dataset.index;
-      
+
   formComments[index].like += formComments[index].isLike ? -1 : +1 ;
   formComments[index].isLike =!formComments[index].isLike;
 
@@ -72,6 +72,7 @@ commentElement.innerHTML = commentHtml;
 initEventListeners();
 nameInputElement.value = "";
      textInputElement.value = "";
+     
 };
 renderFormComments();
 
@@ -110,9 +111,9 @@ buttonElement.addEventListener("click", () => {
   formComments.push({
     name:nameInputElement.value,
     date: myDate.getDate()+'.'+ month+'.'+ 
-    twoDigitYear + ' ' + myDate.getHours()+ ':' 
-    + minutes,
-    comment: textInputElement.value,     
+          twoDigitYear + ' ' + myDate.getHours()+ ':' 
+          + minutes,
+          comment: textInputElement.value,     
     like: 0,
     isLike: false 
         
