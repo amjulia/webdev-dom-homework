@@ -2,10 +2,15 @@ const buttonElement = document.getElementById("get-button");
 const commentElement = document.getElementById("list-comment");
 const nameInputElement = document.getElementById("name-input");
 const textInputElement = document.getElementById("input-text");
+const textComment = document.querySelector(".add-form-text");
 let myDate = new Date();
 let shortYear = myDate.getFullYear(); 
 let twoDigitYear = shortYear.toString().substring(2);
 let month = myDate.getMonth()+1;
+if (month < 10) {
+  month = "0" + month;
+  
+}
 let minutes = myDate.getMinutes();
 if (minutes < 10) {
   minutes = "0" + minutes;
@@ -34,7 +39,8 @@ const  initEventListeners = () => {
   
 for (const likeButton of likeButtons) {
 
-    likeButton.addEventListener("click", () => {
+    likeButton.addEventListener("click", (event) => {
+      event.stopPropagation();
       const index = likeButton.dataset.index;
 
   formComments[index].like += formComments[index].isLike ? -1 : +1 ;
@@ -47,14 +53,20 @@ for (const likeButton of likeButtons) {
 }
 }
 const renderFormComments = () => {
-const commentHtml = formComments.map((formComment, index)=> {
-      return `<li id = "list-comment" class="comment">
+  const commentElement = document.getElementById("list-comment"); 
+  const commentHtml = formComments.map((formComment, index)=> {
+    
+  formComment.comment = textInputElement.value = formComments[index].comment
+   .replaceAll("QUOTE_BEGIN", "<div class='quote'>")
+   .replaceAll("QUOTE_END", "</div>");
+   
+      return `<li id = "list-comment" class="comment"data-index = "${index}">
       <div class="comment-header">
         <div>${formComment.name}</div>
         <div>${formComment.date} </div>
       </div>
       <div class="comment-body">
-        <div class="comment-text">
+        <div class="comment-text" >
           ${formComment.comment}
         </div>
       </div>
@@ -67,15 +79,32 @@ const commentHtml = formComments.map((formComment, index)=> {
     </li>`
        
 }).join('');
-
+ 
 commentElement.innerHTML = commentHtml;
+
+
 initEventListeners();
+answerComment(); 
 nameInputElement.value = "";
-     textInputElement.value = "";
+textInputElement.value = "";
      
 };
-renderFormComments();
 
+function answerComment() {
+  
+  const commentsAnswer = document.querySelectorAll(".comment");
+  const formText = document.querySelector(".add-form-text");
+  commentsAnswer.forEach((comment, index)=> {
+    comment.addEventListener("click", ()=>{
+      
+      formText.value = `${formComments[index].comment} \n ${formComments[index].name}`;
+      textInputElement.value = `QUOTE_BEGIN ${formComments[index].name} : ${formComments[index].comment}QUOTE_END`;
+})
+  }); 
+}   
+
+
+renderFormComments();
 
 
 buttonElement.disabled = true;
@@ -109,11 +138,11 @@ buttonElement.addEventListener("click", () => {
   }
 
   formComments.push({
-    name:nameInputElement.value,
+    name:sanitazedHtml(nameInputElement.value),
     date: myDate.getDate()+'.'+ month+'.'+ 
           twoDigitYear + ' ' + myDate.getHours()+ ':' 
           + minutes,
-          comment: textInputElement.value,     
+    comment: sanitazedHtml(textInputElement.value),     
     like: 0,
     isLike: false 
         
@@ -124,31 +153,12 @@ buttonElement.addEventListener("click", () => {
     
 });
 
-textInputElement.addEventListener("keyup", (event) => {
-  if (event.code === "Enter") { 
-    const oldConstHTML = commentElement.innerHTML;
-  commentElement.innerHTML =  oldConstHTML + 
-  `<li id = "list-comment" class="comment">
-      <div class="comment-header">
-        <div>${nameInputElement.value}</div>
-        <div> ${myDate.getDate()+'.'+ month+'.'+ 
-          twoDigitYear + ' ' + myDate.getHours()+ ':' 
-          + minutes }</div>
-      </div>
-      <div class="comment-body">
-        <div class="comment-text">
-          ${textInputElement.value}
-        </div>
-      </div>
-      <div class="comment-footer">
-        <div class="likes">
-          <span class="likes-counter">0</span>
-          <button class="like-button"></button>
-        </div>
-      </div>
-    </li>`
-  
-    nameInputElement.value = "";
-    textInputElement.value = "";
-}});
+function sanitazedHtml(htmlString)  {
+  return htmlString.replaceAll("&", "&amp;")
+  .replaceAll("<", "&lt;")
+  .replaceAll(">", "&gt;")
+  .replaceAll('"', "&quot;");
+}
+
+
 console.log("It works!");
