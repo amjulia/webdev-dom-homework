@@ -2,10 +2,15 @@ const buttonElement = document.getElementById("get-button");
 const commentElement = document.getElementById("list-comment");
 const nameInputElement = document.getElementById("name-input");
 const textInputElement = document.getElementById("input-text");
+const textComment = document.querySelector(".add-form-text");
 let myDate = new Date();
 let shortYear = myDate.getFullYear(); 
 let twoDigitYear = shortYear.toString().substring(2);
 let month = myDate.getMonth()+1;
+if (month < 10) {
+  month = "0" + month;
+  
+}
 let minutes = myDate.getMinutes();
 if (minutes < 10) {
   minutes = "0" + minutes;
@@ -18,46 +23,52 @@ const formComments = [{
   date:"12.02.22 12:18",
   comment: "Это будет первый комментарий на этой странице",
   like:3,
-  isLike: true
+  isLike: true,
+  isEdit: false 
 },
 {
   name: "Варвара Н.",
   date:"13.02.22 19:22",
   comment: "Мне нравится как оформлена эта страница! ❤",
   like: 75,
-  isLike: true
+  isLike: true,
+  isEdit: false 
 }
 ];
-
+//добавления счетчика лайков
 const  initEventListeners = () => {
   const likeButtons = document.querySelectorAll(".like-button");
-  
-for (const likeButton of likeButtons) {
-
-    likeButton.addEventListener("click", () => {
-      const index = likeButton.dataset.index;
-
-  formComments[index].like += formComments[index].isLike ? -1 : +1 ;
-  formComments[index].isLike =!formComments[index].isLike;
-
-    renderFormComments();
-
+  likeButtons.forEach((el, index) => {
+    el.addEventListener("click", (event) => {
+       event.stopPropagation();
+       formComments[index].like += formComments[index].isLike ? -1 : +1 ;
+       formComments[index].isLike =!formComments[index].isLike;
+       renderFormComments();
+  })   
 });
-
+  
 }
-}
+//рендер
 const renderFormComments = () => {
-const commentHtml = formComments.map((formComment, index)=> {
-      return `<li id = "list-comment" class="comment">
+  const commentElement = document.getElementById("list-comment"); 
+  const commentHtml = formComments.map((formComment, index)=> {
+    
+  formComment.comment = formComments[index].comment
+   .replaceAll("QUOTE_BEGIN", "<div class='quote'>")
+   .replaceAll("QUOTE_END", "</div>");
+  
+      return `<li id = "list-comment" class="comment"data-index = "${index}">
       <div class="comment-header">
         <div>${formComment.name}</div>
         <div>${formComment.date} </div>
       </div>
       <div class="comment-body">
-        <div class="comment-text">
-          ${formComment.comment}
-        </div>
+      ${formComment.isEdit ? `<textarea class="comment-text">${formComment.comment}</textarea>` : `<div class="comment-text" >
+      ${formComment.comment}
+    </div>` }
+        
       </div>
+      <button id = "get-button" class="edit-form-button">${formComment.isEdit ? 'Сохранить' : 'Редактировать'} </button>
       <div class="comment-footer">
         <div class="likes">
           <span class="likes-counter">${formComment.like}</span>
@@ -65,17 +76,54 @@ const commentHtml = formComments.map((formComment, index)=> {
         </div>
       </div>
     </li>`
+   
        
 }).join('');
 
+ 
 commentElement.innerHTML = commentHtml;
+
 initEventListeners();
-nameInputElement.value = "";
-     textInputElement.value = "";
+answerComment(); 
+editComment(); 
      
 };
+
 renderFormComments();
 
+// ответ на комментарий по клику на форму комментария
+
+function answerComment() {
+  
+  const commentsAnswer = document.querySelectorAll(".comment");
+  const formText = document.querySelector(".add-form-text");
+   commentsAnswer.forEach((comment, index)=> {
+    comment.addEventListener("click", ()=>{
+      
+      formText.value = `QUOTE_BEGIN${formComments[index].comment} :\n ${formComments[index].name}QUOTE_END`;
+    //  console.log(formText.value.replaceAll("QUOTE_BEGIN", "").replaceAll("QUOTE_END", "").replaceAll("<div class='quote'>", "").replaceAll("</div>", ""));
+      //textInputElement.value =formText.value.replaceAll("QUOTE_BEGIN", "").replaceAll("QUOTE_END", "");
+     
+})
+  }); 
+}  
+
+// редактирование комментария
+function editComment() {
+  const editButton = document.querySelectorAll(".edit-form-button");
+  const commentText = document.querySelectorAll(".comment-text");
+  editButton.forEach((el, index) => {
+    el.addEventListener("click", (event) => {
+  event.stopPropagation();
+  if (formComments[index].isEdit) {
+    formComments[index].comment = commentText[index].value;
+  }
+  formComments[index].isEdit = !formComments[index].isEdit;
+  
+  renderFormComments();
+  });
+  });
+}
 
 
 buttonElement.disabled = true;
@@ -109,46 +157,30 @@ buttonElement.addEventListener("click", () => {
   }
 
   formComments.push({
-    name:nameInputElement.value,
+    name:sanitazedHtml(nameInputElement.value),
     date: myDate.getDate()+'.'+ month+'.'+ 
           twoDigitYear + ' ' + myDate.getHours()+ ':' 
           + minutes,
-          comment: textInputElement.value,     
+    comment: sanitazedHtml(textInputElement.value.replaceAll("<div class='quote'>","").replaceAll("</div>","")),
+        
     like: 0,
-    isLike: false 
+    isLike: false,
+    isEdit: false 
         
   })
-
-    renderFormComments();
-    initEventListeners();
-    
+  nameInputElement.value = "";
+  textInputElement.value = "";
+  renderFormComments(); 
+  
 });
 
-textInputElement.addEventListener("keyup", (event) => {
-  if (event.code === "Enter") { 
-    const oldConstHTML = commentElement.innerHTML;
-  commentElement.innerHTML =  oldConstHTML + 
-  `<li id = "list-comment" class="comment">
-      <div class="comment-header">
-        <div>${nameInputElement.value}</div>
-        <div> ${myDate.getDate()+'.'+ month+'.'+ 
-          twoDigitYear + ' ' + myDate.getHours()+ ':' 
-          + minutes }</div>
-      </div>
-      <div class="comment-body">
-        <div class="comment-text">
-          ${textInputElement.value}
-        </div>
-      </div>
-      <div class="comment-footer">
-        <div class="likes">
-          <span class="likes-counter">0</span>
-          <button class="like-button"></button>
-        </div>
-      </div>
-    </li>`
-  
-    nameInputElement.value = "";
-    textInputElement.value = "";
-}});
+// устранение уязвимостей
+function sanitazedHtml(htmlString)  {
+  return htmlString.replaceAll("&", "&amp;")
+  .replaceAll("<", "&lt;")
+  .replaceAll(">", "&gt;")
+  .replaceAll('"', "&quot;");
+}
+
+
 console.log("It works!");
