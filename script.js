@@ -41,7 +41,6 @@ const  initEventListeners = () => {
   likeButtons.forEach((el, index) => {
     el.addEventListener("click", (event) => {
        event.stopPropagation();
-    
        formComments[index].like += formComments[index].isLike ? -1 : +1 ;
        formComments[index].isLike =!formComments[index].isLike;
        renderFormComments();
@@ -77,8 +76,10 @@ const renderFormComments = () => {
         </div>
       </div>
     </li>`
+   
        
 }).join('');
+
  
 commentElement.innerHTML = commentHtml;
 
@@ -96,11 +97,13 @@ function answerComment() {
   
   const commentsAnswer = document.querySelectorAll(".comment");
   const formText = document.querySelector(".add-form-text");
-  commentsAnswer.forEach((comment, index)=> {
+   commentsAnswer.forEach((comment, index)=> {
     comment.addEventListener("click", ()=>{
       
-      formText.value = `QUOTE_BEGIN${formComments[index].comment} \n ${formComments[index].name}QUOTE_END`;
-    //  textInputElement.value = `QUOTE_BEGIN ${formComments[index].name} : ${formComments[index].comment}QUOTE_END`;
+      formText.value = `QUOTE_BEGIN${formComments[index].comment} :\n ${formComments[index].name}QUOTE_END`;
+    //  console.log(formText.value.replaceAll("QUOTE_BEGIN", "").replaceAll("QUOTE_END", "").replaceAll("<div class='quote'>", "").replaceAll("</div>", ""));
+      //textInputElement.value =formText.value.replaceAll("QUOTE_BEGIN", "").replaceAll("QUOTE_END", "");
+     
 })
   }); 
 }  
@@ -158,7 +161,8 @@ buttonElement.addEventListener("click", () => {
     date: myDate.getDate()+'.'+ month+'.'+ 
           twoDigitYear + ' ' + myDate.getHours()+ ':' 
           + minutes,
-    comment: sanitazedHtml(textInputElement.value),     
+    comment: sanitazedHtml(textInputElement.value.replaceAll("<div class='quote'>","").replaceAll("</div>","")),
+        
     like: 0,
     isLike: false,
     isEdit: false 
@@ -167,7 +171,7 @@ buttonElement.addEventListener("click", () => {
   nameInputElement.value = "";
   textInputElement.value = "";
   renderFormComments(); 
-   
+  
 });
 
 // устранение уязвимостей
