@@ -35,24 +35,26 @@ const fetchGetPromise = () =>{
     jsonPromise.then((responseData)=> {
       const appComments = responseData.comments.map((comment) => {
         return{
+        id: comment.id,
         name: comment.author.name,
         date: new Date(comment.date).toLocaleTimeString('sm', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }),
         comment: comment.text,
         like: comment.likes,
         isLike: false, 
-        isEdit: false
+        isEdit: false,
+        isLoading:true
         }
         
       })
       formComments = appComments;
+      
       renderFormComments();
+      
+      isLoading = false;
     });
   })} 
   fetchGetPromise();
-
-    // получили данные и рендерим их в приложении
-    
-    
+  
     
 
 
@@ -70,25 +72,27 @@ const  initEventListeners = () => {
   
 }
 //рендер
+
 const renderFormComments = () => {
+
   const commentElement = document.getElementById("list-comment"); 
   const commentHtml = formComments.map((formComment, index)=> {
     
   formComment.comment = formComments[index].comment
    .replaceAll("QUOTE_BEGIN", "<div class='quote'>")
    .replaceAll("QUOTE_END", "</div>");
-  
+   
       return `<li id = "list-comment" class="comment"data-index = "${index}">
       <div class="comment-header">
         <div>${formComment.name}</div>
         <div>${formComment.date} </div>
       </div>
       <div class="comment-body">
-      ${formComment.isEdit ? `<textarea class="comment-text">${formComment.comment}</textarea>` : `<div class="comment-text" >
-      ${formComment.comment}
-    </div>` }
-        
-      </div>
+          ${formComment.isEdit ? `<textarea class="comment-text">${formComment.comment}</textarea>` : `<div class="comment-text" >
+          ${formComment.comment}
+          </div>` }
+       </div>
+      
       <button id = "get-button" class="edit-form-button">${formComment.isEdit ? 'Сохранить' : 'Редактировать'} </button>
       <div class="comment-footer">
         <div class="likes">
@@ -97,20 +101,25 @@ const renderFormComments = () => {
         </div>
       </div>
     </li>`
+    
+    
    
-       
+      
 }).join('');
 
- 
+
+
 commentElement.innerHTML = commentHtml;
 
 initEventListeners();
 answerComment(); 
-editComment(); 
+
+
      
 };
 
 renderFormComments();
+
 
 // ответ на комментарий по клику на форму комментария
 
@@ -128,6 +137,34 @@ function answerComment() {
 }); 
   }); 
 }  
+
+//удаление комментария
+
+// function deleteComment() {
+//   const deleteButtons = document.querySelectorAll(".delete-button");
+
+//   for (const deleteButton of deleteButtons){
+//     deleteButton.addEventListener("click", () => {
+   
+//       const id = deleteButton.dataset.id;
+//       console.log(id);
+    
+//       fetch("https://wedev-api.sky.pro/api/v1/karpova-julia/comments"+id, {
+//         method: "DELETE",
+      
+//       }).then((response) => {
+//         response.json().then((responseData) => {
+//           // получили данные и рендерим их в приложении
+//           formComments = responseData.todos;
+//           renderFormComments();
+//         });
+      
+//   })
+  
+    
+//   });
+//   }}
+
 
 // редактирование комментария
 function editComment() {
@@ -177,20 +214,7 @@ buttonElement.addEventListener("click", () => {
     return;
   }
 
-  // formComments.push({
-  //   name:sanitazedHtml(nameInputElement.value),
-  //   date: myDate.getDate()+'.'+ month+'.'+ 
-  //         twoDigitYear + ' ' + myDate.getHours()+ ':' 
-  //         + minutes,
-  //   comment: sanitazedHtml(textInputElement.value.replaceAll("<div class='quote'>","").replaceAll("</div>","")),
-        
-  //   like: 0,
-  //   isLike: false,
-  //   isEdit: false 
-        
-  // })
-
-  fetch("https://wedev-api.sky.pro/api/v1/karpova-julia/comments", {
+   fetch("https://wedev-api.sky.pro/api/v1/karpova-julia/comments", {
         method: "POST",
         body: JSON.stringify({
           text: textInputElement.value,
@@ -198,18 +222,7 @@ buttonElement.addEventListener("click", () => {
         })
       }).then((response) => {
         response.json().then((responseData) => {
-          // получили данные и рендерим их в приложении
-          // const appComments = responseData.comments.map((comment) => {
-          //   return{
-          //   name: comment.author.name,
-          //   date: new Date(comment.date),
-          //   comment: comment.text,
-          //   likes: comment.likes,
-          //   isLike: false, 
-          //   isEdit: false
-          //   }
-            
-          // })
+         
           formComments = responseData.todos;
           fetchGetPromise();
           renderFormComments();
