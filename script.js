@@ -3,7 +3,8 @@ const commentElement = document.getElementById("list-comment");
 const nameInputElement = document.getElementById("name-input");
 const textInputElement = document.getElementById("input-text");
 const textComment = document.querySelector(".add-form-text");
-let myDate = new Date();
+
+  let myDate = new Date();
 let shortYear = myDate.getFullYear(); 
 let twoDigitYear = shortYear.toString().substring(2);
 let month = myDate.getMonth()+1;
@@ -18,23 +19,43 @@ if (minutes < 10) {
 }
 
 
-const formComments = [{
-  name: "Глеб Фокин",
-  date:"12.02.22 12:18",
-  comment: "Это будет первый комментарий на этой странице",
-  like:3,
-  isLike: true,
-  isEdit: false 
-},
-{
-  name: "Варвара Н.",
-  date:"13.02.22 19:22",
-  comment: "Мне нравится как оформлена эта страница! ❤",
-  like: 75,
-  isLike: true,
-  isEdit: false 
-}
-];
+
+
+
+let formComments = [];
+
+const fetchGetPromise = () =>{
+  const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/karpova-julia/comments", {
+  method: "GET",
+    })
+    fetchPromise.then((response) => {
+      const jsonPromise = response.json();
+   
+
+    jsonPromise.then((responseData)=> {
+      const appComments = responseData.comments.map((comment) => {
+        return{
+        name: comment.author.name,
+        date: new Date(comment.date).toLocaleTimeString('sm', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }),
+        comment: comment.text,
+        like: comment.likes,
+        isLike: false, 
+        isEdit: false
+        }
+        
+      })
+      formComments = appComments;
+      renderFormComments();
+    });
+  })} 
+  fetchGetPromise();
+
+    // получили данные и рендерим их в приложении
+    
+    
+    
+
+
 //добавления счетчика лайков
 const  initEventListeners = () => {
   const likeButtons = document.querySelectorAll(".like-button");
@@ -100,11 +121,11 @@ function answerComment() {
    commentsAnswer.forEach((comment, index)=> {
     comment.addEventListener("click", ()=>{
       
-      formText.value = `QUOTE_BEGIN${formComments[index].comment} :\n ${formComments[index].name}QUOTE_END`;
-    //  console.log(formText.value.replaceAll("QUOTE_BEGIN", "").replaceAll("QUOTE_END", "").replaceAll("<div class='quote'>", "").replaceAll("</div>", ""));
-      //textInputElement.value =formText.value.replaceAll("QUOTE_BEGIN", "").replaceAll("QUOTE_END", "");
-     
-})
+      formText.value = `QUOTE_BEGIN ${formComments[index].comment.replaceAll("<div class='quote'>","")
+      .replaceAll("</div>","")} :\n ${formComments[index].name}QUOTE_END`;
+      
+            
+}); 
   }); 
 }  
 
@@ -156,18 +177,46 @@ buttonElement.addEventListener("click", () => {
     return;
   }
 
-  formComments.push({
-    name:sanitazedHtml(nameInputElement.value),
-    date: myDate.getDate()+'.'+ month+'.'+ 
-          twoDigitYear + ' ' + myDate.getHours()+ ':' 
-          + minutes,
-    comment: sanitazedHtml(textInputElement.value.replaceAll("<div class='quote'>","").replaceAll("</div>","")),
+  // formComments.push({
+  //   name:sanitazedHtml(nameInputElement.value),
+  //   date: myDate.getDate()+'.'+ month+'.'+ 
+  //         twoDigitYear + ' ' + myDate.getHours()+ ':' 
+  //         + minutes,
+  //   comment: sanitazedHtml(textInputElement.value.replaceAll("<div class='quote'>","").replaceAll("</div>","")),
         
-    like: 0,
-    isLike: false,
-    isEdit: false 
+  //   like: 0,
+  //   isLike: false,
+  //   isEdit: false 
         
-  })
+  // })
+
+  fetch("https://wedev-api.sky.pro/api/v1/karpova-julia/comments", {
+        method: "POST",
+        body: JSON.stringify({
+          text: textInputElement.value,
+          name: nameInputElement.value
+        })
+      }).then((response) => {
+        response.json().then((responseData) => {
+          // получили данные и рендерим их в приложении
+          // const appComments = responseData.comments.map((comment) => {
+          //   return{
+          //   name: comment.author.name,
+          //   date: new Date(comment.date),
+          //   comment: comment.text,
+          //   likes: comment.likes,
+          //   isLike: false, 
+          //   isEdit: false
+          //   }
+            
+          // })
+          formComments = responseData.todos;
+          fetchGetPromise();
+          renderFormComments();
+        });
+      });
+
+
   nameInputElement.value = "";
   textInputElement.value = "";
   renderFormComments(); 
