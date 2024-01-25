@@ -22,7 +22,8 @@ body {
   }
 
   .comment,
-  .add-form {
+  .add-form,
+  .loading {
     width: 596px;
     box-sizing: border-box;
     background: radial-gradient(
@@ -123,7 +124,7 @@ body {
     justify-content: flex-end;
   }
 
-  .add-form-button, .edit-form-button{
+  .add-form-button, .edit-form-button, .delete-button{
     margin-top: 24px;
     font-size: 24px;
     padding: 10px 20px;
@@ -131,6 +132,9 @@ body {
     border: none;
     border-radius: 18px;
     cursor: pointer;
+  }
+  .delete-button{
+    width: 300px;
   }
 
   .add-form-button:hover, .edit-form-button:hover  {
@@ -141,4 +145,16 @@ body {
     font-size:20px ;
     background-color: #fff;
     border: px solid #000
+  }
+  .loading{
+    margin-top: 40px;
+    padding: 20px;
+    display: flex;
+    gap: 20px;
+    font-size: 16px;
+  }
+  .img{
+    padding-top: 10px;
+width: 30px;
+height: 30px;
   }
