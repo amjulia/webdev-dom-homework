@@ -113,9 +113,8 @@ commentElement.innerHTML = commentHtml;
 
 initEventListeners();
 answerComment(); 
-editComment()
-
-     
+editComment();
+    
 };
 
 renderFormComments();
@@ -224,17 +223,15 @@ buttonElement.addEventListener("click", () => {
         response.json().then((responseData) => {
          
           formComments = responseData.todos;
+          nameInputElement.value = "";
+          textInputElement.value = "";
           fetchGetPromise();
-          renderFormComments();
-        });
+          
+        });renderFormComments();
       });
-
-
-  nameInputElement.value = "";
-  textInputElement.value = "";
-  renderFormComments(); 
-  
+ 
 });
+
 
 // устранение уязвимостей
 function sanitazedHtml(htmlString)  {
