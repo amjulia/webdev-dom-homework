@@ -3,57 +3,88 @@ const commentElement = document.getElementById("list-comment");
 const nameInputElement = document.getElementById("name-input");
 const textInputElement = document.getElementById("input-text");
 const textComment = document.querySelector(".add-form-text");
+const hidePreloader = document.getElementById("preload");
+const hideForm = document.querySelector(".add-form");
+const loading = document.getElementById("loading");
 
-  let myDate = new Date();
+loading.style.display="none";
+
+let myDate = new Date();
 let shortYear = myDate.getFullYear(); 
 let twoDigitYear = shortYear.toString().substring(2);
 let month = myDate.getMonth()+1;
 if (month < 10) {
   month = "0" + month;
-  
 }
 let minutes = myDate.getMinutes();
 if (minutes < 10) {
   minutes = "0" + minutes;
-  
 }
-
-
-
-
 
 let formComments = [];
 
-const fetchGetPromise = () =>{
-  const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/karpova-julia/comments", {
-  method: "GET",
-    })
-    fetchPromise.then((response) => {
-      const jsonPromise = response.json();
-   
+const fetchGetPromise = () => {
 
-    jsonPromise.then((responseData)=> {
-      const appComments = responseData.comments.map((comment) => {
-        return{
+   return fetch("https://wedev-api.sky.pro/api/v1/karpova-julia/comments", {
+   method: "GET",
+     })
+     .then((response) => {
+       return response.json();
+     })
+     .then((responseData)=> {
+       const appComments = responseData.comments.map((comment) => {
+         return{
         id: comment.id,
-        name: comment.author.name,
-        date: new Date(comment.date).toLocaleTimeString('sm', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }),
+         name: comment.author.name,
+         date: new Date(comment.date).toLocaleTimeString('sm', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }),
         comment: comment.text,
-        like: comment.likes,
-        isLike: false, 
-        isEdit: false,
-        isLoading:true
+         like: comment.likes,
+         isLike: false, 
+         isEdit: false,
+         isLoading:true
         }
         
-      })
-      formComments = appComments;
+       })
+       formComments = appComments;
       
-      renderFormComments();
+       renderFormComments();
+       hidePreloader.style.display = "none";
       
-      isLoading = false;
-    });
-  })} 
-  fetchGetPromise();
+     });
+   }
+
+   fetchGetPromise();
+
+// const fetchGetPromise = () =>{
+//   const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/karpova-julia/comments", {
+//   method: "GET",
+//     })
+//     fetchPromise.then((response) => {
+//       const jsonPromise = response.json();
+   
+
+//     jsonPromise.then((responseData)=> {
+//       const appComments = responseData.comments.map((comment) => {
+//         return{
+//         id: comment.id,
+//         name: comment.author.name,
+//         date: new Date(comment.date).toLocaleTimeString('sm', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }),
+//         comment: comment.text,
+//         like: comment.likes,
+//         isLike: false, 
+//         isEdit: false,
+//         isLoading:true
+//         }
+        
+//       })
+//       formComments = appComments;
+      
+//       renderFormComments();
+      
+//       isLoading = false;
+//     });
+//   })} 
+//   fetchGetPromise();
   
     
 
@@ -81,33 +112,29 @@ const renderFormComments = () => {
   formComment.comment = formComments[index].comment
    .replaceAll("QUOTE_BEGIN", "<div class='quote'>")
    .replaceAll("QUOTE_END", "</div>");
-   
-      return `<li id = "list-comment" class="comment"data-index = "${index}">
-      <div class="comment-header">
-        <div>${formComment.name}</div>
-        <div>${formComment.date} </div>
-      </div>
-      <div class="comment-body">
-          ${formComment.isEdit ? `<textarea class="comment-text">${formComment.comment}</textarea>` : `<div class="comment-text" >
-          ${formComment.comment}
-          </div>` }
-       </div>
-      
-      <button id = "get-button" class="edit-form-button">${formComment.isEdit ? 'Сохранить' : 'Редактировать'} </button>
-      <div class="comment-footer">
-        <div class="likes">
-          <span class="likes-counter">${formComment.like}</span>
-          <button class="like-button ${formComments[index].isLike ? "-active-like" : ""}" data-index="${index}"></button>
-        </div>
-      </div>
-    </li>`
-    
-    
-   
+
+   return ` <li id = "list-comment" class="comment"data-index = "${index}">
+<div class="comment-header">
+  <div>${formComment.name}</div>
+  <div>${formComment.date} </div>
+</div>
+<div class="comment-body">
+    ${formComment.isEdit ? `<textarea class="comment-text">${formComment.comment}</textarea>` : `<div class="comment-text" >
+    ${formComment.comment}
+    </div>` }
+ </div>
+
+<button id = "get-button" class="edit-form-button">${formComment.isEdit ? 'Сохранить' : 'Редактировать'} </button>
+<div class="comment-footer">
+  <div class="likes">
+    <span class="likes-counter">${formComment.like}</span>
+    <button class="like-button ${formComments[index].isLike ? "-active-like" : ""}" data-index="${index}"></button>
+  </div>
+</div>
+</li>`
+ 
       
 }).join('');
-
-
 
 commentElement.innerHTML = commentHtml;
 
@@ -131,39 +158,9 @@ function answerComment() {
       
       formText.value = `QUOTE_BEGIN ${formComments[index].comment.replaceAll("<div class='quote'>","")
       .replaceAll("</div>","")} :\n ${formComments[index].name}QUOTE_END`;
-      
-            
-}); 
+    }); 
   }); 
 }  
-
-//удаление комментария
-
-// function deleteComment() {
-//   const deleteButtons = document.querySelectorAll(".delete-button");
-
-//   for (const deleteButton of deleteButtons){
-//     deleteButton.addEventListener("click", () => {
-   
-//       const id = deleteButton.dataset.id;
-//       console.log(id);
-    
-//       fetch("https://wedev-api.sky.pro/api/v1/karpova-julia/comments"+id, {
-//         method: "DELETE",
-      
-//       }).then((response) => {
-//         response.json().then((responseData) => {
-//           // получили данные и рендерим их в приложении
-//           formComments = responseData.todos;
-//           renderFormComments();
-//         });
-      
-//   })
-  
-    
-//   });
-//   }}
-
 
 // редактирование комментария
 function editComment() {
@@ -182,7 +179,7 @@ function editComment() {
   });
 }
 
-
+//валидация полей ввода
 buttonElement.disabled = true;
 
   textInputElement.addEventListener("input", () => {
@@ -198,7 +195,7 @@ buttonElement.disabled = true;
       return;}
   }); 
 
-
+//событие на кнопке Отправить
 buttonElement.addEventListener("click", () => {
 
   nameInputElement.classList.remove("error");
@@ -212,26 +209,33 @@ buttonElement.addEventListener("click", () => {
     textInputElement.classList.add("error");
     return;
   }
+  
+  hideForm.style.display = "none";
+  loading.style.display="flex";
 
-   fetch("https://wedev-api.sky.pro/api/v1/karpova-julia/comments", {
+fetch("https://wedev-api.sky.pro/api/v1/karpova-julia/comments", {
         method: "POST",
         body: JSON.stringify({
           text: textInputElement.value,
           name: nameInputElement.value
         })
       }).then((response) => {
-        response.json().then((responseData) => {
-         
-          formComments = responseData.todos;
+           return response.json();
+        })
+       .then(()=>{
+          return fetchGetPromise(); 
+        }).then(()=>{
+          hideForm.style.display = "flex";
+          loading.style.display="none";
+        })
+      
           nameInputElement.value = "";
           textInputElement.value = "";
-          fetchGetPromise();
-          
-        });renderFormComments();
-      });
- 
-});
-
+                   
+        });
+        
+      renderFormComments();
+     
 
 // устранение уязвимостей
 function sanitazedHtml(htmlString)  {
