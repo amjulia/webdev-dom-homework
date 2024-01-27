@@ -59,15 +59,18 @@ const fetchGetPromise = () => {
 //добавления счетчика лайков
 const  initEventListeners = () => {
   const likeButtons = document.querySelectorAll(".like-button");
-  
-  likeButtons.forEach((el, index) => {
+   likeButtons.forEach((el, index) => {
+    
     el.addEventListener("click", (event) => {
-       event.stopPropagation();
-       delay(2000).then(()=>{
-        el.classList.add("-loading-like");
-       }).then(() => {
+      event.stopPropagation();
+
+      el.classList.add("-loading-like");
+
+        delay(2000).then(() => {
+     
        formComments[index].like += formComments[index].isLike ? -1 : +1 ;
        formComments[index].isLike =!formComments[index].isLike;
+       
        renderFormComments();
   }) });  
 }
@@ -102,7 +105,7 @@ const renderFormComments = () => {
   <div class="likes">
     <span class="likes-counter">${formComment.like}</span>
     <button class="like-button ${formComments[index].isLike ? "-active-like" : ""}" data-index="${index}"></button>
-  </div>
+    </div>
 </div>
 </li>`
  

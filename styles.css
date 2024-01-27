@@ -19,7 +19,6 @@ body {
   .-loading-like {
     animation: rotating 2s linear infinite;
   }
- 
 
   .container {
     font-family: Helvetica;
@@ -105,6 +104,7 @@ body {
     background-repeat: no-repeat;
     width: 22px;
     height: 22px;
+   
   }
 
   .-active-like {
@@ -178,4 +178,4 @@ width: 30px;
 height: 30px;
   }
 
-
+ 
