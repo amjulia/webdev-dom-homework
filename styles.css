@@ -16,9 +16,7 @@ body {
     }
   }
 
-  .-loading-like {
-    animation: rotating 2s linear infinite;
-  }
+
 
   .container {
     font-family: Helvetica;
@@ -178,4 +176,6 @@ width: 30px;
 height: 30px;
   }
 
- 
+  .-loading-like {
+    animation: rotating 2s linear infinite;
+  }
