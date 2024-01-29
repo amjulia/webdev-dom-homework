@@ -192,8 +192,8 @@ buttonElement.addEventListener("click", () => {
 fetch("https://wedev-api.sky.pro/api/v1/karpova-julia/comments", {
         method: "POST",
         body: JSON.stringify({
-          text: textInputElement.value,
-          name: nameInputElement.value
+          text: sanitazedHtml(textInputElement.value),
+          name: sanitazedHtml(nameInputElement.value)
         })
       }).then((response) => {
            return response.json();
