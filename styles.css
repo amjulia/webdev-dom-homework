@@ -1,6 +1,22 @@
 body {
     margin: 0;
   }
+  @keyframes rotating {
+    from {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(30deg);;
+    }
+    75% {
+      transform: rotate(-30deg);;
+    }
+    to {
+      transform: rotate(0deg);
+    }
+  }
+
+
 
   .container {
     font-family: Helvetica;
@@ -86,6 +102,7 @@ body {
     background-repeat: no-repeat;
     width: 22px;
     height: 22px;
+   
   }
 
   .-active-like {
@@ -157,4 +174,8 @@ body {
     padding-top: 10px;
 width: 30px;
 height: 30px;
+  }
+
+  .-loading-like {
+    animation: rotating 2s linear infinite;
   }
