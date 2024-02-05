@@ -133,7 +133,11 @@ function answerComment() {
     comment.addEventListener("click", ()=>{
       
       formText.value = `QUOTE_BEGIN ${formComments[index].comment.replaceAll("<div class='quote'>","")
-      .replaceAll("</div>","")} :\n ${formComments[index].name}QUOTE_END`;
+      .replaceAll("</div>","")
+      .replaceAll("&lt;","")
+      .replaceAll("&gt;","")
+      .replaceAll("&quot;","")
+      } :\n ${formComments[index].name}QUOTE_END`;
     }); 
   }); 
 }  
@@ -146,7 +150,7 @@ function editComment() {
     el.addEventListener("click", (event) => {
   event.stopPropagation();
   if (formComments[index].isEdit) {
-    formComments[index].comment = commentText[index].value;
+    formComments[index].comment = sanitazedHtml(commentText[index].value);
   }
   formComments[index].isEdit = !formComments[index].isEdit;
   
