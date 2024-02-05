@@ -189,24 +189,52 @@ buttonElement.addEventListener("click", () => {
   hideForm.style.display = "none";
   loading.style.display="flex";
 
-fetch("https://wedev-api.sky.pro/api/v1/karpova-julia/comments", {
+const fetchPostPromise = () => {
+  fetch("https://wedev-api.sky.pro/api/v1/karpova-julia/comments", {
         method: "POST",
         body: JSON.stringify({
           text: sanitazedHtml(textInputElement.value),
-          name: sanitazedHtml(nameInputElement.value)
+          name: sanitazedHtml(nameInputElement.value),
+          forceError: true,
         })
       }).then((response) => {
-           return response.json();
-        })
+        if (response.status === 500) {
+          throw new Error("Сервер упал");
+                 
+        } if (response.status === 400) {
+          throw new Error("Неверный запрос");
+                 
+        } else {
+          return response.json();
+        } 
+      })
        .then(()=>{
           return fetchGetPromise(); 
         }).then(()=>{
+         // hideForm.style.display = "flex";
+       //   loading.style.display="none";
+          nameInputElement.value = "";
+          textInputElement.value = "";
+        }).catch((error) => {
+          
+      
+          if (error.message === "Сервер упал") {
+            fetchPostPromise(); 
+            //alert("Сервер сломался, попробуй позже");
+          }
+       else if (error.message === "Неверный запрос") {
+        alert("Имя и комментарий не должны быть короче 3-х символов");
+        } else {
+        alert("Нет подключения к интернету");
+        }
+        })
+        .finally(() => {
           hideForm.style.display = "flex";
           loading.style.display="none";
         })
-      
-          nameInputElement.value = "";
-          textInputElement.value = "";
+}
+fetchPostPromise();    
+         
                    
         });
 
