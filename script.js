@@ -211,8 +211,6 @@ const fetchPostPromise = () => {
        .then(()=>{
           return fetchGetPromise(); 
         }).then(()=>{
-         // hideForm.style.display = "flex";
-       //   loading.style.display="none";
           nameInputElement.value = "";
           textInputElement.value = "";
         }).catch((error) => {
