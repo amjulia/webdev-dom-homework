@@ -29,9 +29,14 @@ const fetchGetPromise = () => {
    method: "GET",
      })
      .then((response) => {
-       return response.json();
-     })
-     .then((responseData)=> {
+      if (response.status === 200) {
+        return response.json();
+      } else {
+        return Promise.reject("Сервер упал");
+      }
+    })
+    
+      .then((responseData)=> {
        const appComments = responseData.comments.map((comment) => {
          return {
         id: comment.id,
@@ -50,7 +55,13 @@ const fetchGetPromise = () => {
        renderFormComments();
        hidePreloader.style.display = "none";
       
-     });
+     }).catch((error) => {
+      if (error.message === "Сервер упал") {
+       alert("Сервер сломался, попробуй позже");
+      } else {
+        alert("Нет подключения к интернету");
+      }
+     })
    }
 
    fetchGetPromise();
@@ -214,20 +225,21 @@ const fetchPostPromise = () => {
       })
        .then(()=>{
           return fetchGetPromise(); 
-        }).then(()=>{
+        })
+        .then(()=>{
           nameInputElement.value = "";
           textInputElement.value = "";
-        }).catch((error) => {
-          
-      
+        })
+        .catch((error) => {
+            
           if (error.message === "Сервер упал") {
             fetchPostPromise(); 
             //alert("Сервер сломался, попробуй позже");
           }
        else if (error.message === "Неверный запрос") {
-        alert("Имя и комментарий не должны быть короче 3-х символов");
+              alert("Имя и комментарий не должны быть короче 3-х символов");
         } else {
-        alert("Нет подключения к интернету");
+              alert("Нет подключения к интернету");
         }
         })
         .finally(() => {
