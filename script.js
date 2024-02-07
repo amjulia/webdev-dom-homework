@@ -29,9 +29,14 @@ const fetchGetPromise = () => {
    method: "GET",
      })
      .then((response) => {
-       return response.json();
-     })
-     .then((responseData)=> {
+      if (response.status === 200) {
+        return response.json();
+      } else {
+        return Promise.reject("Сервер упал");
+      }
+    })
+    
+      .then((responseData)=> {
        const appComments = responseData.comments.map((comment) => {
          return {
         id: comment.id,
@@ -50,7 +55,13 @@ const fetchGetPromise = () => {
        renderFormComments();
        hidePreloader.style.display = "none";
       
-     });
+     }).catch((error) => {
+      if (error.message === "Сервер упал") {
+       alert("Сервер сломался, попробуй позже");
+      } else {
+        alert("Нет подключения к интернету");
+      }
+     })
    }
 
    fetchGetPromise();
@@ -133,7 +144,11 @@ function answerComment() {
     comment.addEventListener("click", ()=>{
       
       formText.value = `QUOTE_BEGIN ${formComments[index].comment.replaceAll("<div class='quote'>","")
-      .replaceAll("</div>","")} :\n ${formComments[index].name}QUOTE_END`;
+      .replaceAll("</div>","")
+      .replaceAll("&lt;","")
+      .replaceAll("&gt;","")
+      .replaceAll("&quot;","")
+      } :\n ${formComments[index].name}QUOTE_END`;
     }); 
   }); 
 }  
@@ -146,7 +161,7 @@ function editComment() {
     el.addEventListener("click", (event) => {
   event.stopPropagation();
   if (formComments[index].isEdit) {
-    formComments[index].comment = commentText[index].value;
+    formComments[index].comment = sanitazedHtml(commentText[index].value);
   }
   formComments[index].isEdit = !formComments[index].isEdit;
   
@@ -189,24 +204,51 @@ buttonElement.addEventListener("click", () => {
   hideForm.style.display = "none";
   loading.style.display="flex";
 
-fetch("https://wedev-api.sky.pro/api/v1/karpova-julia/comments", {
+const fetchPostPromise = () => {
+  fetch("https://wedev-api.sky.pro/api/v1/karpova-julia/comments", {
         method: "POST",
         body: JSON.stringify({
           text: sanitazedHtml(textInputElement.value),
-          name: sanitazedHtml(nameInputElement.value)
+          name: sanitazedHtml(nameInputElement.value),
+          forceError: true,
         })
       }).then((response) => {
-           return response.json();
-        })
+        if (response.status === 500) {
+          throw new Error("Сервер упал");
+                 
+        } if (response.status === 400) {
+          throw new Error("Неверный запрос");
+                 
+        } else {
+          return response.json();
+        } 
+      })
        .then(()=>{
           return fetchGetPromise(); 
-        }).then(()=>{
+        })
+        .then(()=>{
+          nameInputElement.value = "";
+          textInputElement.value = "";
+        })
+        .catch((error) => {
+            
+          if (error.message === "Сервер упал") {
+            fetchPostPromise(); 
+            //alert("Сервер сломался, попробуй позже");
+          }
+       else if (error.message === "Неверный запрос") {
+              alert("Имя и комментарий не должны быть короче 3-х символов");
+        } else {
+              alert("Нет подключения к интернету");
+        }
+        })
+        .finally(() => {
           hideForm.style.display = "flex";
           loading.style.display="none";
         })
-      
-          nameInputElement.value = "";
-          textInputElement.value = "";
+}
+fetchPostPromise();    
+         
                    
         });
 
