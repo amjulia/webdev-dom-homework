@@ -1,3 +1,6 @@
+import { getTodos, postTodo} from "./api.js";
+import { sanitazedHtml } from "./sanitazedHtml.js";
+
 const buttonElement = document.getElementById("get-button");
 const commentElement = document.getElementById("list-comment");
 const nameInputElement = document.getElementById("name-input");
@@ -25,18 +28,7 @@ let formComments = [];
 
 const fetchGetPromise = () => {
 
-   return fetch("https://wedev-api.sky.pro/api/v1/karpova-julia/comments", {
-   method: "GET",
-     })
-     .then((response) => {
-      if (response.status === 200) {
-        return response.json();
-      } else {
-        return Promise.reject("Сервер упал");
-      }
-    })
-    
-      .then((responseData)=> {
+  getTodos().then((responseData)=> {
        const appComments = responseData.comments.map((comment) => {
          return {
         id: comment.id,
@@ -205,25 +197,10 @@ buttonElement.addEventListener("click", () => {
   loading.style.display="flex";
 
 const fetchPostPromise = () => {
-  fetch("https://wedev-api.sky.pro/api/v1/karpova-julia/comments", {
-        method: "POST",
-        body: JSON.stringify({
-          text: sanitazedHtml(textInputElement.value),
-          name: sanitazedHtml(nameInputElement.value),
-          forceError: true,
-        })
-      }).then((response) => {
-        if (response.status === 500) {
-          throw new Error("Сервер упал");
-                 
-        } if (response.status === 400) {
-          throw new Error("Неверный запрос");
-                 
-        } else {
-          return response.json();
-        } 
-      })
-       .then(()=>{
+  postTodo({ 
+            text:textInputElement.value, 
+            name:nameInputElement.value})
+         .then(()=>{
           return fetchGetPromise(); 
         })
         .then(()=>{
@@ -233,6 +210,7 @@ const fetchPostPromise = () => {
         .catch((error) => {
             
           if (error.message === "Сервер упал") {
+            console.log(error.message);
             fetchPostPromise(); 
             //alert("Сервер сломался, попробуй позже");
           }
@@ -255,13 +233,7 @@ fetchPostPromise();
       renderFormComments();
      
 
-// устранение уязвимостей
-function sanitazedHtml(htmlString)  {
-  return htmlString.replaceAll("&", "&amp;")
-  .replaceAll("<", "&lt;")
-  .replaceAll(">", "&gt;")
-  .replaceAll('"', "&quot;");
-}
+
 
 // Функция для имитации запросов в API
 function delay(interval = 300) {
