@@ -1,11 +1,10 @@
 import { getTodos, postTodo} from "./api.js";
-import { sanitazedHtml } from "./sanitazedHtml.js";
+import { renderFormComments } from "./renderFormComments.js";
 
 const buttonElement = document.getElementById("get-button");
 const commentElement = document.getElementById("list-comment");
 const nameInputElement = document.getElementById("name-input");
 const textInputElement = document.getElementById("input-text");
-const textComment = document.querySelector(".add-form-text");
 const hidePreloader = document.getElementById("preload");
 const hideForm = document.querySelector(".add-form");
 const loading = document.getElementById("loading");
@@ -13,8 +12,6 @@ const loading = document.getElementById("loading");
 loading.style.display="none";
 
 let myDate = new Date();
-let shortYear = myDate.getFullYear(); 
-let twoDigitYear = shortYear.toString().substring(2);
 let month = myDate.getMonth()+1;
 if (month < 10) {
   month = "0" + month;
@@ -44,7 +41,7 @@ const fetchGetPromise = () => {
        })
        formComments = appComments;
       
-       renderFormComments();
+       renderFormComments({ formComments });
        hidePreloader.style.display = "none";
       
      }).catch((error) => {
@@ -60,7 +57,7 @@ const fetchGetPromise = () => {
 
 
 //добавления счетчика лайков
-const  initEventListeners = () => {
+export const  initEventListeners = () => {
   const likeButtons = document.querySelectorAll(".like-button");
    likeButtons.forEach((el, index) => {
     
@@ -74,93 +71,13 @@ const  initEventListeners = () => {
        formComments[index].like += formComments[index].isLike ? -1 : +1 ;
        formComments[index].isLike =!formComments[index].isLike;
        
-       renderFormComments();
+       renderFormComments({ formComments });
   }) });  
 }
 );
 }
 
 
-//рендер
-
-const renderFormComments = () => {
-
-  const commentElement = document.getElementById("list-comment"); 
-  const commentHtml = formComments.map((formComment, index)=> {
-    
-  formComment.comment = formComments[index].comment
-   .replaceAll("QUOTE_BEGIN", "<div class='quote'>")
-   .replaceAll("QUOTE_END", "</div>");
-
-   return ` <li id = "list-comment" class="comment"data-index = "${index}">
-<div class="comment-header">
-  <div>${formComment.name}</div>
-  <div>${formComment.date} </div>
-</div>
-<div class="comment-body">
-    ${formComment.isEdit ? `<textarea class="comment-text">${formComment.comment}</textarea>` : `<div class="comment-text" >
-    ${formComment.comment}
-    </div>` }
- </div>
-
-<button id = "get-button" class="edit-form-button">${formComment.isEdit ? 'Сохранить' : 'Редактировать'} </button>
-<div class="comment-footer">
-  <div class="likes">
-    <span class="likes-counter">${formComment.like}</span>
-    <button class="like-button ${formComments[index].isLike ? "-active-like" : ""}" data-index="${index}"></button>
-    </div>
-</div>
-</li>`
- 
-      
-}).join('');
-
-commentElement.innerHTML = commentHtml;
-
-initEventListeners();
-answerComment(); 
-editComment();
-    
-};
-
-renderFormComments();
-
-
-// ответ на комментарий по клику на форму комментария
-
-function answerComment() {
-  
-  const commentsAnswer = document.querySelectorAll(".comment");
-  const formText = document.querySelector(".add-form-text");
-   commentsAnswer.forEach((comment, index)=> {
-    comment.addEventListener("click", ()=>{
-      
-      formText.value = `QUOTE_BEGIN ${formComments[index].comment.replaceAll("<div class='quote'>","")
-      .replaceAll("</div>","")
-      .replaceAll("&lt;","")
-      .replaceAll("&gt;","")
-      .replaceAll("&quot;","")
-      } :\n ${formComments[index].name}QUOTE_END`;
-    }); 
-  }); 
-}  
-
-// редактирование комментария
-function editComment() {
-  const editButton = document.querySelectorAll(".edit-form-button");
-  const commentText = document.querySelectorAll(".comment-text");
-  editButton.forEach((el, index) => {
-    el.addEventListener("click", (event) => {
-  event.stopPropagation();
-  if (formComments[index].isEdit) {
-    formComments[index].comment = sanitazedHtml(commentText[index].value);
-  }
-  formComments[index].isEdit = !formComments[index].isEdit;
-  
-  renderFormComments();
-  });
-  });
-}
 
 //валидация полей ввода
 buttonElement.disabled = true;
@@ -210,8 +127,7 @@ const fetchPostPromise = () => {
         .catch((error) => {
             
           if (error.message === "Сервер упал") {
-            console.log(error.message);
-            fetchPostPromise(); 
+             fetchPostPromise(); 
             //alert("Сервер сломался, попробуй позже");
           }
        else if (error.message === "Неверный запрос") {
@@ -224,16 +140,12 @@ const fetchPostPromise = () => {
           hideForm.style.display = "flex";
           loading.style.display="none";
         })
-}
-fetchPostPromise();    
-         
-                   
-        });
+    }
+    fetchPostPromise();    
+     });
 
-      renderFormComments();
-     
-
-
+      renderFormComments({formComments});
+    
 
 // Функция для имитации запросов в API
 function delay(interval = 300) {
