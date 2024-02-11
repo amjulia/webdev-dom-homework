@@ -1,7 +1,9 @@
 import { sanitazedHtml } from "./sanitazedHtml.js";
 
+const baseURL = "https://wedev-api.sky.pro/api/v1/karpova-julia/comments";
+
 export function getTodos() {
-    return fetch("https://wedev-api.sky.pro/api/v1/karpova-julia/comments", {
+    return fetch(baseURL, {
    method: "GET",
      })
      .then((response) => {
@@ -14,7 +16,7 @@ export function getTodos() {
 }
 
 export function postTodo({ text, name}) {
-   return fetch("https://wedev-api.sky.pro/api/v1/karpova-julia/comments", {
+   return fetch(baseURL, {
         method: "POST",
         body: JSON.stringify({
           text: sanitazedHtml(text),
