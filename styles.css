@@ -39,7 +39,8 @@ body {
 
   .comment,
   .add-form,
-  .loading {
+  .loading,
+  .login-form {
     width: 596px;
     box-sizing: border-box;
     background: radial-gradient(
@@ -117,7 +118,9 @@ body {
   }
 
   .add-form-name,
-  .add-form-text {
+  .add-form-text,
+  .login-form-name,
+  .password-form-name {
     font-size: 16px;
     font-family: Helvetica;
     border-radius: 8px;
@@ -125,7 +128,9 @@ body {
     white-space: pre-line;
   }
 
-  .add-form-name {
+  .add-form-name,
+  .login-form-name,
+  .password-form-name {
     width: 300px;
     padding: 11px 22px;
   }
@@ -141,7 +146,10 @@ body {
     justify-content: flex-end;
   }
 
-  .add-form-button, .edit-form-button, .delete-button{
+  .add-form-button, 
+  .edit-form-button, 
+  .delete-button,
+  .login-button  {
     margin-top: 24px;
     font-size: 24px;
     padding: 10px 20px;
@@ -154,7 +162,9 @@ body {
     width: 300px;
   }
 
-  .add-form-button:hover, .edit-form-button:hover  {
+  .add-form-button:hover, 
+  .edit-form-button:hover, 
+  .login-button:hover  {
     opacity: 0.9;
   }
   .quote{
@@ -178,4 +188,32 @@ height: 30px;
 
   .-loading-like {
     animation: rotating 2s linear infinite;
+  }
+  .login-form{
+    padding: 20px;
+    margin-top: 48px;
+   flex-direction: column;
+    display: flex;
+    gap: 12px;
+    text-align: center;
+    padding: 16px 22px;
+       
+    
+  }
+  .login-form-name,
+  .password-form-name{
+    width: 500px;
+   
+  }
+  .login-input{
+    font-size: 20px;
+    
+   
+  }
+  .autorization{
+    font-family: Helvetica;
+    color: #ffffff;
+    font-size: 18px;
+    padding-top: 16px; 
+    padding-bottom: 12px;
   }

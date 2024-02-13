@@ -35,6 +35,8 @@ export const renderFormComments = ({ formComments}) => {
    
         
   }).join('');
+
+  
   
   commentElement.innerHTML = commentHtml;
   

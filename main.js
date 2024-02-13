@@ -1,5 +1,6 @@
 import { getTodos, postTodo} from "./api.js";
 import { renderFormComments } from "./renderFormComments.js";
+import { renderLogin } from "./login.js";
 
 const buttonElement = document.getElementById("get-button");
 const commentElement = document.getElementById("list-comment");
@@ -54,7 +55,7 @@ const fetchGetPromise = () => {
    }
 
    fetchGetPromise();
-
+renderLogin({fetchGetPromise});
 
 //добавления счетчика лайков
 export const  initEventListeners = () => {
