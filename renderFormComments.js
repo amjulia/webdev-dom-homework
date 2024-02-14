@@ -1,14 +1,16 @@
 import { sanitazedHtml } from "./sanitazedHtml.js";
 import { initEventListeners } from "./main.js";
 import { answerComment } from "./actionOnComment.js";
-import { editComment } from "./actionOnComment.js"; 
+import { editComment } from "./actionOnComment.js";
+import { token } from "./api.js"; 
+import { renderLogin } from "./login.js";
 
-export const renderFormComments = ({ formComments}) => {
- 
+export const renderFormComments = ({ formComments, fetchGetPromise}) => {
+  const appElement = document.getElementById("app");
     
     const commentElement = document.getElementById("list-comment"); 
     const commentHtml = formComments.map((formComment, index)=> {
-      
+       
     formComment.comment = formComments[index].comment
      .replaceAll("QUOTE_BEGIN", "<div class='quote'>")
      .replaceAll("QUOTE_END", "</div>");
@@ -35,15 +37,34 @@ export const renderFormComments = ({ formComments}) => {
    
         
   }).join('');
+const appHtml = `<div class="container">
 
+<ul id = "list-comment" class="comments">
+${commentHtml}
+</ul>
+${token ? `
+<div class="add-form" id="add-form">
+<input type="text" class="add-form-name" placeholder="Введите ваше имя"  id="name-input" >
+<textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4" id="comment-input"></textarea>
+<div class="add-form-row">
+    <button class="add-form-button" id="add-button">Написать</button>
+</div>
+</div>`
+            : '<button class="link-form-button" id="login-button">Чтобы добавить коментарий, авторизуйтесь </button>'
+        }
+        </div> `;
   
   
-  commentElement.innerHTML = commentHtml;
+appElement.innerHTML = appHtml;
 
- 
+const loginButtonElement = document.getElementById("login-button");
+loginButtonElement.addEventListener("click", () => {
+  
+    renderLogin({fetchGetPromise});
+});
   
   initEventListeners();
   answerComment({formComments}); 
   editComment({formComments});
-      
-  };
+}
+    

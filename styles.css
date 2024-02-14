@@ -41,6 +41,7 @@ body {
   .add-form,
   .loading,
   .login-form
+  
    {
     width: 596px;
     box-sizing: border-box;
@@ -111,7 +112,8 @@ body {
     background-image: url("data:image/svg+xml,%3Csvg width='22' height='20' viewBox='0 0 22 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15.95 0C14.036 0 12.199 0.882834 11 2.26703C9.801 0.882834 7.964 0 6.05 0C2.662 0 0 2.6267 0 5.99455C0 10.1035 3.74 13.4714 9.405 18.5613L11 20L12.595 18.5613C18.26 13.4714 22 10.1035 22 5.99455C22 2.6267 19.338 0 15.95 0Z' fill='%23BCEC30'/%3E%3C/svg%3E");
   }
 
-  .add-form {
+  .add-form ,
+  .login-form {
     padding: 20px;
     margin-top: 48px;
     display: flex;
@@ -193,17 +195,7 @@ height: 30px;
   .-loading-like {
     animation: rotating 2s linear infinite;
   }
-  .login-form{
-    padding: 20px;
-    margin-top: 48px;
-   flex-direction: column;
-    display: flex;
-    gap: 12px;
-    text-align: center;
-    padding: 16px 22px;
-       
-    
-  }
+ 
   .login-form-name,
   .password-form-name,
   .user-form-name{
@@ -219,8 +211,21 @@ height: 30px;
     margin-top: 0;
     text-decoration: underline;
     font-size: 18px;
+    text-align: center;
+    
   }
   .enter-login{
     font-size: 18px;
     text-decoration: underline;
+  }
+  .link-form-button{
+    font-family: Helvetica;
+    color: #ffffff;
+    background: transparent;
+    border: none;
+    font-size: 16px;
+  }
+  .login-form {
+    gap: 12px;
+      
   }

@@ -10,7 +10,7 @@ const hidePreloader = document.getElementById("preload");
 const hideForm = document.querySelector(".add-form");
 const loading = document.getElementById("loading");
 
-loading.style.display="none";
+
 
 let myDate = new Date();
 let month = myDate.getMonth()+1;
@@ -24,7 +24,7 @@ if (minutes < 10) {
 
 let formComments = [];
 
-const fetchGetPromise = () => {
+export const fetchGetPromise = (formComments) => {
   
   getTodos().then((responseData)=> {
        const appComments = responseData.comments.map((comment) => {
@@ -56,8 +56,8 @@ const fetchGetPromise = () => {
      })
    }
 
-   fetchGetPromise();
-renderLogin({fetchGetPromise});
+   fetchGetPromise(formComments);
+//renderLogin({fetchGetPromise});
 
 //добавления счетчика лайков
 export const  initEventListeners = () => {
@@ -113,8 +113,9 @@ buttonElement.addEventListener("click", () => {
     return;
   }
   
-  hideForm.style.display = "none";
-  loading.style.display="flex";
+ hideForm.style.display = "flex";
+ //loading.style.display="flex";
+  
 
 const fetchPostPromise = () => {
   postTodo({ 

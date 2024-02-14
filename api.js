@@ -62,7 +62,7 @@ export function login({ login, password}) {
           throw new Error("Сервер упал");
                 
        } if (response.status === 400) {
-         throw new Error("Неверный запрос");
+         throw new Error("Неверный логин или пароль");
                 
        } else {
          return response.json();
