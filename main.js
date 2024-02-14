@@ -2,10 +2,7 @@ import { getTodos, postTodo} from "./api.js";
 import { renderFormComments } from "./renderFormComments.js";
 import { renderLogin } from "./login.js";
 
-const buttonElement = document.getElementById("get-button");
-const commentElement = document.getElementById("list-comment");
-const nameInputElement = document.getElementById("name-input");
-const textInputElement = document.getElementById("input-text");
+
 const hidePreloader = document.getElementById("preload");
 const hideForm = document.querySelector(".add-form");
 const loading = document.getElementById("loading");
@@ -59,6 +56,7 @@ export const fetchGetPromise = (formComments) => {
    fetchGetPromise(formComments);
 //renderLogin({fetchGetPromise});
 
+
 //добавления счетчика лайков
 export const  initEventListeners = () => {
   const likeButtons = document.querySelectorAll(".like-button");
@@ -80,7 +78,10 @@ export const  initEventListeners = () => {
 );
 }
 
-
+const buttonElement = document.getElementById("add-button");
+const commentElement = document.getElementById("list-comment");
+const nameInputElement = document.getElementById("name-input");
+const textInputElement = document.getElementById("input-text");
 
 //валидация полей ввода
 buttonElement.disabled = true;
