@@ -4,7 +4,7 @@ import { answerComment } from "./actionOnComment.js";
 import { editComment } from "./actionOnComment.js"; 
 
 export const renderFormComments = ({ formComments}) => {
-
+ 
     
     const commentElement = document.getElementById("list-comment"); 
     const commentHtml = formComments.map((formComment, index)=> {
@@ -39,6 +39,8 @@ export const renderFormComments = ({ formComments}) => {
   
   
   commentElement.innerHTML = commentHtml;
+
+ 
   
   initEventListeners();
   answerComment({formComments}); 

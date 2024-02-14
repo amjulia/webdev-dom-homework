@@ -25,7 +25,7 @@ if (minutes < 10) {
 let formComments = [];
 
 const fetchGetPromise = () => {
-
+  
   getTodos().then((responseData)=> {
        const appComments = responseData.comments.map((comment) => {
          return {
@@ -41,9 +41,11 @@ const fetchGetPromise = () => {
         
        })
        formComments = appComments;
+       
       
        renderFormComments({ formComments });
        hidePreloader.style.display = "none";
+       
       
      }).catch((error) => {
       if (error.message === "Сервер упал") {
