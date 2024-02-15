@@ -4,8 +4,7 @@ import { renderLogin } from "./login.js";
 
 
 const hidePreloader = document.getElementById("preload");
-const hideForm = document.querySelector(".add-form");
-const loading = document.getElementById("loading");
+
 
 
 
@@ -17,6 +16,12 @@ if (month < 10) {
 let minutes = myDate.getMinutes();
 if (minutes < 10) {
   minutes = "0" + minutes;
+}
+
+
+export let user = null;
+export const setUser = (newUser) => {
+  user = newUser;
 }
 
 let formComments = [];
@@ -48,7 +53,7 @@ export const fetchGetPromise = (formComments) => {
       if (error.message === "Сервер упал") {
        alert("Сервер сломался, попробуй позже");
       } else {
-        alert("Нет подключения к интернету");
+        alert(error);
       }
      })
    }
@@ -78,78 +83,12 @@ export const  initEventListeners = () => {
 );
 }
 
-const buttonElement = document.getElementById("add-button");
-const commentElement = document.getElementById("list-comment");
-const nameInputElement = document.getElementById("name-input");
-const textInputElement = document.getElementById("input-text");
 
-//валидация полей ввода
-buttonElement.disabled = true;
 
-  textInputElement.addEventListener("input", () => {
-    buttonElement.disabled = false;
-    if (nameInputElement.value === "" || commentElement.value === "") {
-      buttonElement.disabled = true;
-      return;}
-  }); 
-  nameInputElement.addEventListener("input", () => {
-    buttonElement.disabled = false;
-    if (nameInputElement.value === "" || commentElement.value === "") {
-      buttonElement.disabled = true;
-      return;}
-  }); 
-
-//событие на кнопке Отправить
-buttonElement.addEventListener("click", () => {
-
-  nameInputElement.classList.remove("error");
-  textInputElement.classList.remove("error");
-
-  if (nameInputElement.value === '') {
-    nameInputElement.classList.add("error");
-     return;
-  }
-  if (textInputElement.value === '') {
-    textInputElement.classList.add("error");
-    return;
-  }
-  
- hideForm.style.display = "flex";
- //loading.style.display="flex";
   
 
-const fetchPostPromise = () => {
-  postTodo({ 
-            text:textInputElement.value, 
-            name:nameInputElement.value})
-         .then(()=>{
-          return fetchGetPromise(); 
-        })
-        .then(()=>{
-          nameInputElement.value = "";
-          textInputElement.value = "";
-        })
-        .catch((error) => {
-            
-          if (error.message === "Сервер упал") {
-             fetchPostPromise(); 
-            //alert("Сервер сломался, попробуй позже");
-          }
-       else if (error.message === "Неверный запрос") {
-              alert("Имя и комментарий не должны быть короче 3-х символов");
-        } else {
-              alert("Нет подключения к интернету");
-        }
-        })
-        .finally(() => {
-          hideForm.style.display = "flex";
-          loading.style.display="none";
-        })
-    }
-    fetchPostPromise();    
-     });
 
-      renderFormComments({formComments});
+      
     
 
 // Функция для имитации запросов в API

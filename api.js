@@ -9,6 +9,7 @@ export const setToken = (newToken) => {
   token = newToken;
 }
 
+
 export function getTodos() {
     return fetch(baseURL, {
    method: "GET",
@@ -41,7 +42,7 @@ export function postTodo({ text, name}) {
            throw new Error("Сервер упал");
                  
         } if (response.status === 400) {
-          throw new Error("Неверный логин или пароль");
+          throw new Error("Неверный запрос");
                  
         } else {
           return response.json();
