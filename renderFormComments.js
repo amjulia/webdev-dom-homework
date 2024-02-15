@@ -2,14 +2,17 @@ import { sanitazedHtml } from "./sanitazedHtml.js";
 import { initEventListeners, user, fetchGetPromise } from "./main.js";
 import { answerComment } from "./actionOnComment.js";
 import { editComment } from "./actionOnComment.js";
-import { postTodo } from "./api.js"; 
+import { postTodo, deleteTodo } from "./api.js"; 
 import { renderLogin } from "./login.js";
 
+
+
 export const renderFormComments = ({ formComments}) => {
+
+
   const appElement = document.getElementById("app");
-    
-    const commentElement = document.getElementById("list-comment"); 
-    const commentHtml = formComments.map((formComment, index)=> {
+  const commentElement = document.getElementById("list-comment"); 
+  const commentHtml = formComments.map((formComment, index)=> {
        
     formComment.comment = formComments[index].comment
      .replaceAll("QUOTE_BEGIN", "<div class='quote'>")
@@ -26,7 +29,8 @@ export const renderFormComments = ({ formComments}) => {
       </div>` }
    </div>
   
-  <button id = "get-button" class="edit-form-button">${formComment.isEdit ? 'Сохранить' : 'Редактировать'} </button>
+  <button id = "get-button" class="${user ? "edit-form-button" : "edit-form-button-none"  }">${formComment.isEdit ? 'Сохранить' : 'Редактировать'} </button>
+  <button class="${user ? "delete-button" : "delete-button-none"}" data-id="${formComment.id}">Удалить</button>
   <div class="comment-footer">
     <div class="likes">
       <span class="likes-counter">${formComment.like}</span>
@@ -34,24 +38,18 @@ export const renderFormComments = ({ formComments}) => {
       </div>
   </div>
   </li>`
-   
-        
   }).join('');
-const appHtml = `<div class="container">
 
-<ul id = "list-comment" class="comments">
-${commentHtml}
-</ul>
+const appHtml = `<div class="container">
+<ul id = "list-comment" class="comments">${commentHtml}</ul>
 ${user ? `
 <div class="add-form" id="add-form">
 <input type="text" class="add-form-name" placeholder="Введите ваше имя"  id="name-input" value ="${user.name}" readonly/>
 <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4" id="comment-input"></textarea>
 <div class="add-form-row">
     <button class="add-form-button" id="add-button">Написать</button>
-</div>
-
-`
-            : '<button class="link-form-button" id="login-button">Чтобы добавить коментарий, авторизуйтесь </button>'
+</div>`
+      : '<button class="link-form-button" id="login-button">Чтобы добавить коментарий, авторизуйтесь </button>'
         }
         </div>
         <div class="loading" id ="loading">
@@ -64,9 +62,26 @@ ${user ? `
   
 
 appElement.innerHTML = appHtml;
+
+const deleteButtons = document.querySelectorAll(".delete-button");
+
+    for (const deleteButton of deleteButtons) {
+      deleteButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+
+        const id = deleteButton.dataset.id;
+
+     deleteTodo({id})
+          .then(() => {
+            fetchGetPromise();
+          });
+      });
+    }
+
 const loading = document.getElementById("loading");
-loading.style.display="none" 
-initEventListeners();
+loading.style.display="none" ;
+
+initEventListeners({formComments});
 answerComment({formComments}); 
 editComment({formComments});
 
@@ -76,6 +91,8 @@ if(user) {
 const nameInputElement = document.getElementById("name-input");
 const textInputElement = document.getElementById("comment-input");
 const hideForm = document.querySelector(".add-form");
+
+
 
 
 //валидация полей ввода
@@ -99,8 +116,7 @@ buttonElement.disabled = true;
 
 //событие на кнопке Отправить
 buttonElement.addEventListener("click", () => {
-  
-  console.log("кнопка работает");
+ 
   nameInputElement.style.backgroundColor = "white";
   textInputElement.style.backgroundColor = "white";
 
@@ -113,7 +129,9 @@ buttonElement.addEventListener("click", () => {
     return;
   }
   
- 
+  
+  document.querySelector(".add-form").style.display = "none";
+  document.getElementById("loading").style.display="flex";
 
 
 const fetchPostPromise = () => {
@@ -123,9 +141,6 @@ const fetchPostPromise = () => {
          .then(()=>{
     
           return fetchGetPromise(); 
-        }).then(()=>{
-          hideForm.style.display = "none";
-  loading.style.display="flex";
         })
         .then(()=>{
           
@@ -133,7 +148,7 @@ const fetchPostPromise = () => {
           textInputElement.value = "";
         })
         .catch((error) => {
-            
+          
           if (error.message === "Сервер упал") {
              fetchPostPromise(); 
             //alert("Сервер сломался, попробуй позже");

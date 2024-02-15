@@ -59,11 +59,11 @@ export const fetchGetPromise = (formComments) => {
    }
 
    fetchGetPromise(formComments);
-//renderLogin({fetchGetPromise});
+
 
 
 //добавления счетчика лайков
-export const  initEventListeners = () => {
+export const  initEventListeners = ({formComments}) => {
   const likeButtons = document.querySelectorAll(".like-button");
    likeButtons.forEach((el, index) => {
     

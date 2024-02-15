@@ -25,6 +25,17 @@ export function getTodos() {
       }
     })
 }
+export function deleteTodo({id}) {
+  return  fetch(`${baseURL}/${id}`, {
+   method: "DELETE",    
+   headers: {
+     Authorization: `Bearer ${token}`
+   }
+ })
+   .then((response) => {
+     return response.json();
+   });
+ }
 
 export function postTodo({ text, name}) {
    return fetch(baseURL, {
