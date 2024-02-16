@@ -1,12 +1,17 @@
-import { login, setToken, token } from "./api.js";
+import { registration, setToken, token } from "./api.js";
 import {fetchGetPromise, setUser, user} from "./main.js";
-import { renderRegistration } from "./registration.js";
+import { renderLogin } from "./login.js";
 
 
- export const renderLogin = () => {
+ export const renderRegistration = () => {
  
     const appElement = document.getElementById("app"); 
-    const loginHtml = `<div class="login-form"><p class="login-input">Форма входа</p>
+    const regHtml = `<div class="login-form"><p class="login-input">Форма регистрации</p>
+    <input 
+      type="text"
+      class="user-form-name"
+      placeholder="Имя"
+    />
     <input 
       type="text"
       class="login-form-name"
@@ -17,34 +22,29 @@ import { renderRegistration } from "./registration.js";
     class="password-form-name"
     placeholder="Пароль"
   />
-  <button class ="login-button">Войти</button>
-  <button class="autorization-button" >Зарегистрироваться </button>
+  <button class="button-autorization">Зарегистрироваться</button>
+  <button class="enter-login-button">Войти</button>
   
   </div>`;
-    appElement.innerHTML = loginHtml;
+    appElement.innerHTML = regHtml;
 
-
-const buttonElement = document.querySelector(".login-button");
+   
+const buttonElement = document.querySelector(".button-autorization");
+const regNameInputElement = document.querySelector(".user-form-name");
 const loginInputElement = document.querySelector(".login-form-name");
 const passwordInputElement = document.querySelector(".password-form-name");
 
-loginInputElement.addEventListener("input", () => {
-  loginInputElement.style.backgroundColor = "#f3f7dc"
-});
-
-passwordInputElement.addEventListener("input", () => {
-  passwordInputElement.style.backgroundColor = "#f3f7dc"
-});
 
 buttonElement.addEventListener("click", () => {
 
-login({
+registration({
+    name: regNameInputElement.value,
     login: loginInputElement.value,
     password: passwordInputElement.value
 })
 .then((responseData) => {
  setToken(responseData.user.token);
- setUser(responseData.user)
+ setUser(responseData.user);
  
  
 })
@@ -61,12 +61,10 @@ login({
 });
  })
 
- const registrationElement = document.querySelector(".autorization-button");
-
-registrationElement.addEventListener("click", () => {
-  
-  renderRegistration({fetchGetPromise});
-})
+ const EnterButton = document.querySelector(".enter-login-button");
+ EnterButton.addEventListener("click", () => {
+    renderLogin({fetchGetPromise});
+ })
 
  }
  

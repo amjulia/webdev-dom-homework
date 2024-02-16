@@ -1,12 +1,8 @@
 import { getTodos, postTodo} from "./api.js";
 import { renderFormComments } from "./renderFormComments.js";
-import { renderLogin } from "./login.js";
 
 
 const hidePreloader = document.getElementById("preload");
-
-
-
 
 let myDate = new Date();
 let month = myDate.getMonth()+1;
@@ -26,7 +22,7 @@ export const setUser = (newUser) => {
 
 let formComments = [];
 
-export const fetchGetPromise = (formComments) => {
+export const fetchGetPromise = () => {
   
   getTodos().then((responseData)=> {
        const appComments = responseData.comments.map((comment) => {
@@ -58,7 +54,7 @@ export const fetchGetPromise = (formComments) => {
      })
    }
 
-   fetchGetPromise(formComments);
+   fetchGetPromise();
 
 
 
@@ -79,8 +75,7 @@ export const  initEventListeners = ({formComments}) => {
        
        renderFormComments({ formComments });
   }) });  
-}
-);
+});
 }
 
 

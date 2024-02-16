@@ -220,16 +220,18 @@ height: 30px;
     text-align: center;
     
   }
-  .enter-login{
-    font-size: 18px;
-    text-decoration: underline;
-  }
-  .link-form-button{
+  
+  
+  .link-form-button,
+  .autorization-button,
+  .enter-login-button{
     font-family: Helvetica;
     color: #ffffff;
     background: transparent;
     border: none;
     font-size: 16px;
+    text-decoration: underline;
+    cursor: pointer;
   }
   .login-form {
     gap: 12px;

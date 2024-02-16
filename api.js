@@ -81,3 +81,26 @@ export function login({ login, password}) {
        } 
      })
 }
+
+export function registration({ name, login, password}) {
+  
+  return fetch(userURL, {
+       method: "POST",
+       body: JSON.stringify({
+        name,
+        login,
+        password,
+         forceError: true,
+       })
+     }).then((response) => {
+       if (response.status === 500) {
+          throw new Error("Сервер упал");
+                
+       } if (response.status === 400) {
+         throw new Error("Неверный логин или пароль");
+                
+       } else {
+         return response.json();
+       } 
+     })
+}

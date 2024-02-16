@@ -7,8 +7,8 @@ import { renderLogin } from "./login.js";
 
 
 
-export const renderFormComments = ({ formComments}) => {
 
+export const renderFormComments = ({ formComments}) => {
 
   const appElement = document.getElementById("app");
   const commentElement = document.getElementById("list-comment"); 
@@ -91,7 +91,8 @@ if(user) {
 const nameInputElement = document.getElementById("name-input");
 const textInputElement = document.getElementById("comment-input");
 const hideForm = document.querySelector(".add-form");
-
+nameInputElement.style.backgroundColor ="#ccc";
+nameInputElement.style.color ="grey"
 
 
 
@@ -172,10 +173,12 @@ const fetchPostPromise = () => {
 }
 else {
   const loginButtonElement = document.getElementById("login-button");
+
 loginButtonElement.addEventListener("click", () => {
-  console.log("123456");
-    renderLogin({fetchGetPromise});
+      renderLogin({fetchGetPromise});
    
 });
+
+
 }
 }
