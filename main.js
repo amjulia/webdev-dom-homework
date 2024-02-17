@@ -15,12 +15,11 @@ if (minutes < 10) {
   minutes = "0" + minutes;
 }
 
-
 export let user = null;
+// export let user = getUserFromLocalStorage();
 export const setUser = (newUser) => {
   user = newUser;
-  saveToLocalStorage(user)
-  getUserFromLocalStorage(user);
+
 }
 
 let formComments = [];
@@ -82,28 +81,9 @@ export const  initEventListeners = () => {
   }
   console.warn(error);
 });
-  //     el.classList.add("-loading-like");
-
-  //       delay(2000).then(() => {
-     
-  //      formComments[index].like += formComments[index].isLike ? -1 : +1 ;
-  //      formComments[index].isLike =!formComments[index].isLike;
-       
-  //      renderFormComments({ formComments });
-  // }) 
+ 
 });  
 });
-}
-
-  
-
-// Функция для имитации запросов в API
-function delay(interval = 300) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, interval);
-  });
 }
 
 console.log("It works!");
