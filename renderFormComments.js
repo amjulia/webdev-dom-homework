@@ -13,7 +13,7 @@ export const renderFormComments = ({ formComments}) => {
   const appElement = document.getElementById("app");
   const commentElement = document.getElementById("list-comment"); 
   const commentHtml = formComments.map((formComment, index)=> {
-       
+       console.log(formComment);
     formComment.comment = formComments[index].comment
      .replaceAll("QUOTE_BEGIN", "<div class='quote'>")
      .replaceAll("QUOTE_END", "</div>");
@@ -33,8 +33,8 @@ export const renderFormComments = ({ formComments}) => {
   <button class="${user ? "delete-button" : "delete-button-none"}" data-id="${formComment.id}">Удалить</button>
   <div class="comment-footer">
     <div class="likes">
-      <span class="likes-counter">${formComment.like}</span>
-      <button class="like-button ${formComments[index].isLike ? "-active-like" : ""}" data-index="${index}"></button>
+      <span class="likes-counter">${formComment.likes}</span>
+      <button class="like-button ${formComment.isLiked ? "-active-like" : ""}" data-id="${formComment.id}"></button>
       </div>
   </div>
   </li>`

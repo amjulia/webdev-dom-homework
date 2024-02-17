@@ -66,17 +66,17 @@ export function deleteTodo({id}) {
  
  export function likeTodo ({id}) {
         return fetch(`${baseURL}/${id}/toggle-like`,{
-    metod: "POST",
+        method: "POST",
     headers: {
       Authorization: `Bearer ${token}`
     }
   }).then((response)=> {
     if (response.status === 401) {
       throw new Error("Неавторизованные пользователи не могут ставить лайки");
+      
   }
-}).then((response) =>{
-    return response.json();
-  });
+  return response.json();
+});
  }
 
 export function login({ login, password}) {

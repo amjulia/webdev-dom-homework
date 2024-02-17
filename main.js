@@ -1,5 +1,6 @@
 import { getTodos, likeTodo} from "./api.js";
 import { renderFormComments } from "./renderFormComments.js";
+import { getUserFromLocalStorage, saveToLocalStorage } from "./localStorage.js";
 
 
 const hidePreloader = document.getElementById("preload");
@@ -18,6 +19,8 @@ if (minutes < 10) {
 export let user = null;
 export const setUser = (newUser) => {
   user = newUser;
+  saveToLocalStorage(user)
+  getUserFromLocalStorage(user);
 }
 
 let formComments = [];
@@ -31,8 +34,8 @@ export const fetchGetPromise = () => {
          name: comment.author.name,
          date: new Date(comment.date).toLocaleTimeString('sm', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }),
         comment: comment.text,
-         like: comment.likes,
-         isLike: false, 
+         likes: comment.likes,
+         isLiked: comment.isLiked, 
          isEdit: false,
          isLoading:true
         }
@@ -47,9 +50,9 @@ export const fetchGetPromise = () => {
       
      }).catch((error) => {
       if (error.message === "Сервер упал") {
-       alert("Сервер сломался, попробуй позже");
+       console.log("Сервер сломался, попробуй позже");
       } else {
-        alert(error);
+        console.log(error);
       }
      })
    }
@@ -59,22 +62,23 @@ export const fetchGetPromise = () => {
 
 
 //добавления счетчика лайков
-export const  initEventListeners = ({formComments}) => {
+export const  initEventListeners = () => {
   const likeButtons = document.querySelectorAll(".like-button");
-   likeButtons.forEach((el, id) => {
+   likeButtons.forEach((el) => {
     
     el.addEventListener("click", (event) => {
       event.stopPropagation();
-
+  const id = event.target.dataset.id;
     likeTodo({id}).then(()=>{
-  fetchGetPromise({formComments});
+  fetchGetPromise();
 
 }).catch((error) => {
+ 
   if (error.message === 'Неавторизованные пользователи не могут ставить лайки') {
-    alert('Неавторизованные пользователи не могут ставить лайки');
+    console.log('Неавторизованные пользователи не могут ставить лайки');
   }
   else {
-    alert("Кажется, у вас сломался интернет, попробуйте позже");
+    console.log("Кажется, у вас сломался интернет, попробуйте позже");
   }
   console.warn(error);
 });
