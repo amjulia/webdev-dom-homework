@@ -1,4 +1,4 @@
-import { getTodos, postTodo} from "./api.js";
+import { getTodos, likeTodo} from "./api.js";
 import { renderFormComments } from "./renderFormComments.js";
 
 
@@ -61,30 +61,37 @@ export const fetchGetPromise = () => {
 //добавления счетчика лайков
 export const  initEventListeners = ({formComments}) => {
   const likeButtons = document.querySelectorAll(".like-button");
-   likeButtons.forEach((el, index) => {
+   likeButtons.forEach((el, id) => {
     
     el.addEventListener("click", (event) => {
       event.stopPropagation();
 
-      el.classList.add("-loading-like");
+    likeTodo({id}).then(()=>{
+  fetchGetPromise({formComments});
 
-        delay(2000).then(() => {
+}).catch((error) => {
+  if (error.message === 'Неавторизованные пользователи не могут ставить лайки') {
+    alert('Неавторизованные пользователи не могут ставить лайки');
+  }
+  else {
+    alert("Кажется, у вас сломался интернет, попробуйте позже");
+  }
+  console.warn(error);
+});
+  //     el.classList.add("-loading-like");
+
+  //       delay(2000).then(() => {
      
-       formComments[index].like += formComments[index].isLike ? -1 : +1 ;
-       formComments[index].isLike =!formComments[index].isLike;
+  //      formComments[index].like += formComments[index].isLike ? -1 : +1 ;
+  //      formComments[index].isLike =!formComments[index].isLike;
        
-       renderFormComments({ formComments });
-  }) });  
+  //      renderFormComments({ formComments });
+  // }) 
+});  
 });
 }
 
-
-
   
-
-
-      
-    
 
 // Функция для имитации запросов в API
 function delay(interval = 300) {

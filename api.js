@@ -2,6 +2,7 @@ import { sanitazedHtml } from "./sanitazedHtml.js";
 
 const baseURL = "https://wedev-api.sky.pro/api/v2/karpova-julia/comments";
 const userURL = "https://wedev-api.sky.pro/api/user/login";
+const regUser = "https://wedev-api.sky.pro/api/user";
 
 
 export let token;
@@ -25,17 +26,7 @@ export function getTodos() {
       }
     })
 }
-export function deleteTodo({id}) {
-  return  fetch(`${baseURL}/${id}`, {
-   method: "DELETE",    
-   headers: {
-     Authorization: `Bearer ${token}`
-   }
- })
-   .then((response) => {
-     return response.json();
-   });
- }
+
 
 export function postTodo({ text, name}) {
    return fetch(baseURL, {
@@ -61,6 +52,33 @@ export function postTodo({ text, name}) {
       })
 }
 
+export function deleteTodo({id}) {
+  return  fetch(`${baseURL}/${id}`, {
+   method: "DELETE",    
+   headers: {
+     Authorization: `Bearer ${token}`
+   }
+ })
+   .then((response) => {
+     return response.json();
+   });
+ }
+ 
+ export function likeTodo ({id}) {
+        return fetch(`${baseURL}/${id}/toggle-like`,{
+    metod: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }).then((response)=> {
+    if (response.status === 401) {
+      throw new Error("Неавторизованные пользователи не могут ставить лайки");
+  }
+}).then((response) =>{
+    return response.json();
+  });
+ }
+
 export function login({ login, password}) {
   return fetch(userURL, {
        method: "POST",
@@ -84,7 +102,7 @@ export function login({ login, password}) {
 
 export function registration({ name, login, password}) {
   
-  return fetch(userURL, {
+  return fetch(regUser, {
        method: "POST",
        body: JSON.stringify({
         name,
@@ -97,7 +115,7 @@ export function registration({ name, login, password}) {
           throw new Error("Сервер упал");
                 
        } if (response.status === 400) {
-         throw new Error("Неверный логин или пароль");
+         throw new Error("Пользователь с таким логинои уже зарегистрирован");
                 
        } else {
          return response.json();

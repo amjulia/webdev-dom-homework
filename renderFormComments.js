@@ -40,6 +40,7 @@ export const renderFormComments = ({ formComments}) => {
   </li>`
   }).join('');
 
+
 const appHtml = `<div class="container">
 <ul id = "list-comment" class="comments">${commentHtml}</ul>
 ${user ? `
@@ -91,6 +92,7 @@ if(user) {
 const nameInputElement = document.getElementById("name-input");
 const textInputElement = document.getElementById("comment-input");
 const hideForm = document.querySelector(".add-form");
+
 nameInputElement.style.backgroundColor ="#ccc";
 nameInputElement.style.color ="grey"
 
@@ -176,9 +178,6 @@ else {
 
 loginButtonElement.addEventListener("click", () => {
       renderLogin({fetchGetPromise});
-   
-});
-
-
+ });
 }
 }

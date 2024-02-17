@@ -46,13 +46,12 @@ registration({
  setToken(responseData.user.token);
  setUser(responseData.user);
  
- 
 })
 .then(() => {
     fetchGetPromise();
 }).catch((error) => {
-  if (error.message === 'Неверный логин или пароль') {
-      alert('Введен неправильный логин или пароль');
+  if (error.message === 'Пользователь с таким логинои уже зарегистрирован') {
+      alert('Пользователь с таким логинои уже зарегистрирован');
   }
   else {
       alert("Кажется, у вас сломался интернет, попробуйте позже");
