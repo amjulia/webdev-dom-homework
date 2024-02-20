@@ -7,44 +7,12 @@
   </head>
 
   <body>
-    
     <div class="container">
-      <span id ="preload">Загрузка страницы комментариев</span>
-      <ul id = "list-comment" class="comments">
-       
-      </ul>
-     
-      <div class="add-form">
-        <input id = "name-input"
-          type="text"
-          class="add-form-name"
-          placeholder="Введите ваше имя"
-        />
-        
-        <textarea id = "input-text"
-          type="textarea"
-          class="add-form-text"
-          placeholder="Введите ваш коментарий"
-          rows="4"
-        ></textarea>
-        <div class="add-form-row">
-          <button id = "get-button" class="add-form-button">Написать</button>
-          </div>
-        </div> 
-      <!-- <span id ="loading">Комментарий загружается...</span>
-       -->
-      <div class="loading" id ="loading">
-        <img class="img" src="img/gifgivecom (1).gif" alt="">
-
-          <p> Комментарий добавляется...</p>
-      </div> 
+      <span id="preload">Загрузка страницы комментариев</span>
+      <ul id="list-comment" class="comments"></ul>
+      <div id="app"></div>
     </div>
- 
   </body>
-  <style>
-    .error {
-      background-color: rgb(236, 149, 149);
-    }
-  </style>
+
   <script type="module" src="main.js"></script>
 </html>

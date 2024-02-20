@@ -1,15 +1,9 @@
-import { getTodos, postTodo} from "./api.js";
+import { getTodos, likeTodo} from "./api.js";
 import { renderFormComments } from "./renderFormComments.js";
+import { getUserFromLocalStorage, saveToLocalStorage } from "./localStorage.js";
 
-const buttonElement = document.getElementById("get-button");
-const commentElement = document.getElementById("list-comment");
-const nameInputElement = document.getElementById("name-input");
-const textInputElement = document.getElementById("input-text");
+
 const hidePreloader = document.getElementById("preload");
-const hideForm = document.querySelector(".add-form");
-const loading = document.getElementById("loading");
-
-loading.style.display="none";
 
 let myDate = new Date();
 let month = myDate.getMonth()+1;
@@ -21,10 +15,17 @@ if (minutes < 10) {
   minutes = "0" + minutes;
 }
 
+export let user = null;
+// export let user = getUserFromLocalStorage();
+export const setUser = (newUser) => {
+  user = newUser;
+
+}
+
 let formComments = [];
 
-const fetchGetPromise = () => {
-
+export const fetchGetPromise = () => {
+  
   getTodos().then((responseData)=> {
        const appComments = responseData.comments.map((comment) => {
          return {
@@ -32,23 +33,25 @@ const fetchGetPromise = () => {
          name: comment.author.name,
          date: new Date(comment.date).toLocaleTimeString('sm', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }),
         comment: comment.text,
-         like: comment.likes,
-         isLike: false, 
+         likes: comment.likes,
+         isLiked: comment.isLiked, 
          isEdit: false,
          isLoading:true
         }
         
        })
        formComments = appComments;
+       
       
        renderFormComments({ formComments });
        hidePreloader.style.display = "none";
+       
       
      }).catch((error) => {
       if (error.message === "Сервер упал") {
-       alert("Сервер сломался, попробуй позже");
+       console.log("Сервер сломался, попробуй позже");
       } else {
-        alert("Нет подключения к интернету");
+        console.log(error);
       }
      })
    }
@@ -56,104 +59,31 @@ const fetchGetPromise = () => {
    fetchGetPromise();
 
 
+
 //добавления счетчика лайков
 export const  initEventListeners = () => {
   const likeButtons = document.querySelectorAll(".like-button");
-   likeButtons.forEach((el, index) => {
+   likeButtons.forEach((el) => {
     
     el.addEventListener("click", (event) => {
       event.stopPropagation();
+  const id = event.target.dataset.id;
+    likeTodo({id}).then(()=>{
+  fetchGetPromise();
 
-      el.classList.add("-loading-like");
-
-        delay(2000).then(() => {
-     
-       formComments[index].like += formComments[index].isLike ? -1 : +1 ;
-       formComments[index].isLike =!formComments[index].isLike;
-       
-       renderFormComments({ formComments });
-  }) });  
-}
-);
-}
-
-
-
-//валидация полей ввода
-buttonElement.disabled = true;
-
-  textInputElement.addEventListener("input", () => {
-    buttonElement.disabled = false;
-    if (nameInputElement.value === "" || commentElement.value === "") {
-      buttonElement.disabled = true;
-      return;}
-  }); 
-  nameInputElement.addEventListener("input", () => {
-    buttonElement.disabled = false;
-    if (nameInputElement.value === "" || commentElement.value === "") {
-      buttonElement.disabled = true;
-      return;}
-  }); 
-
-//событие на кнопке Отправить
-buttonElement.addEventListener("click", () => {
-
-  nameInputElement.classList.remove("error");
-  textInputElement.classList.remove("error");
-
-  if (nameInputElement.value === '') {
-    nameInputElement.classList.add("error");
-     return;
+}).catch((error) => {
+ 
+  if (error.message === 'Неавторизованные пользователи не могут ставить лайки') {
+    console.log('Неавторизованные пользователи не могут ставить лайки');
   }
-  if (textInputElement.value === '') {
-    textInputElement.classList.add("error");
-    return;
+  else {
+    console.log("Кажется, у вас сломался интернет, попробуйте позже");
   }
-  
-  hideForm.style.display = "none";
-  loading.style.display="flex";
-
-const fetchPostPromise = () => {
-  postTodo({ 
-            text:textInputElement.value, 
-            name:nameInputElement.value})
-         .then(()=>{
-          return fetchGetPromise(); 
-        })
-        .then(()=>{
-          nameInputElement.value = "";
-          textInputElement.value = "";
-        })
-        .catch((error) => {
-            
-          if (error.message === "Сервер упал") {
-             fetchPostPromise(); 
-            //alert("Сервер сломался, попробуй позже");
-          }
-       else if (error.message === "Неверный запрос") {
-              alert("Имя и комментарий не должны быть короче 3-х символов");
-        } else {
-              alert("Нет подключения к интернету");
-        }
-        })
-        .finally(() => {
-          hideForm.style.display = "flex";
-          loading.style.display="none";
-        })
-    }
-    fetchPostPromise();    
-     });
-
-      renderFormComments({formComments});
-    
-
-// Функция для имитации запросов в API
-function delay(interval = 300) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, interval);
-  });
+  console.warn(error);
+});
+ 
+});  
+});
 }
 
 console.log("It works!");
