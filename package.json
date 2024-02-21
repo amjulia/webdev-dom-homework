@@ -117,7 +117,6 @@
     "picocolors": "^1.0.0",
     "pkg-dir": "^4.2.0",
     "prelude-ls": "^1.2.1",
-    "prettier": "^3.2.5",
     "prettier-linter-helpers": "^1.0.0",
     "punycode": "^2.3.1",
     "queue-microtask": "^1.2.3",
@@ -167,6 +166,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "prettier": "^3.2.5",
     "webpack": "^5.90.3",
     "webpack-cli": "^5.1.4"
   }
