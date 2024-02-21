@@ -153,8 +153,6 @@
     "update-browserslist-db": "^1.0.13",
     "uri-js": "^4.4.1",
     "watchpack": "^2.4.0",
-    "webpack": "^5.90.3",
-    "webpack-cli": "^5.1.4",
     "webpack-merge": "^5.10.0",
     "webpack-sources": "^3.2.3",
     "which": "^2.0.2",
@@ -163,9 +161,13 @@
     "yocto-queue": "^0.1.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "webpack --mode development --watch"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4"
+  }
 }
