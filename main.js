@@ -7,7 +7,7 @@ const hidePreloader = document.getElementById("preload");
 
 
 export let user = null;
-// export let user = getUserFromLocalStorage();
+ //export let user = getUserFromLocalStorage();
 export const setUser = (newUser) => {
   user = newUser;
 
@@ -79,4 +79,4 @@ export const  initEventListeners = () => {
 });
 }
 
-console.log("It works!");
+console.log("It works1!");

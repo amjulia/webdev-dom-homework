@@ -133,8 +133,9 @@ ${
       }
 
       //Скрываем форму, показываем лоадер
-      hideForm.style.display = "none";
       loading.style.display = "flex";
+      hideForm.style.display = "none";
+      
 
       const fetchPostPromise = () => {
         postTodo({
@@ -142,6 +143,8 @@ ${
           name: nameInputElement.value,
         })
           .then(() => {
+            
+            buttonElement.textContent = "Загружается"
             return fetchGetPromise();
           })
           .then(() => {
@@ -164,7 +167,7 @@ ${
           });
       };
       fetchPostPromise();
-      renderFormComments({ formComments });
+      // renderFormComments({ formComments });
     });
   } else {
     const loginButtonElement = document.getElementById("login-button");
