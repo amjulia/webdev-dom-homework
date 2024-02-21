@@ -5,15 +5,6 @@ import { format } from "date-fns";
 
 const hidePreloader = document.getElementById("preload");
 
-// let myDate = new Date();
-// let month = myDate.getMonth()+1;
-// if (month < 10) {
-//   month = "0" + month;
-// }
-// let minutes = myDate.getMinutes();
-// if (minutes < 10) {
-//   minutes = "0" + minutes;
-// }
 
 export let user = null;
 // export let user = getUserFromLocalStorage();
@@ -28,7 +19,7 @@ export const fetchGetPromise = () => {
   
   getTodos().then((responseData)=> {
        const appComments = responseData.comments.map((comment) => {
-        const currentDate = module(new Date(comment.date), "yyyy-MM-dd hh.mm.ss")
+        const currentDate = format(new Date(comment.date), "yyyy-MM-dd hh.mm.ss")
          return {
         id: comment.id,
          name: comment.author.name,

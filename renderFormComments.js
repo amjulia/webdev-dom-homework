@@ -35,7 +35,8 @@ export const renderFormComments = ({ formComments }) => {
     user ? "edit-form-button" : "edit-form-button-none"
   }">${formComment.isEdit ? "Сохранить" : "Редактировать"} </button>
   <button class="${user ? "delete-button" : "delete-button-none"}" data-id="${
-        formComment.id}">Удалить</button>
+    formComment.id
+  }">Удалить</button>
   <div class="comment-footer">
     <div class="likes">
       <span class="likes-counter">${formComment.likes}</span>
@@ -51,7 +52,8 @@ export const renderFormComments = ({ formComments }) => {
   const appHtml = `<div class="container">
 <ul id = "list-comment" class="comments">${commentHtml}</ul>
 ${
-  user? `
+  user
+    ? `
 <div class="add-form" id="add-form">
 <input type="text" class="add-form-name" placeholder="Введите ваше имя"  id="name-input" value ="${user.name}" readonly/>
 <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4" id="comment-input"></textarea>
