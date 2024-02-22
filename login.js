@@ -42,7 +42,7 @@ export const renderLogin = () => {
       .then((responseData) => {
         setToken(responseData.user.token);
         setUser(responseData.user);
-        //saveToLocalStorage(user);
+        saveToLocalStorage(user);
       })
       .then(() => {
         fetchGetPromise();

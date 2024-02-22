@@ -2,7 +2,7 @@ import { sanitazedHtml } from "./sanitazedHtml.js";
 import { initEventListeners, user, fetchGetPromise } from "./main.js";
 import { answerComment } from "./actionOnComment.js";
 import { editComment } from "./actionOnComment.js";
-import { postTodo, deleteTodo } from "./api.js";
+import { postTodo, deleteTodo, token } from "./api.js";
 import { renderLogin } from "./login.js";
 
 export const renderFormComments = ({ formComments }) => {
@@ -35,7 +35,8 @@ export const renderFormComments = ({ formComments }) => {
     user ? "edit-form-button" : "edit-form-button-none"
   }">${formComment.isEdit ? "Сохранить" : "Редактировать"} </button>
   <button class="${user ? "delete-button" : "delete-button-none"}" data-id="${
-        formComment.id}">Удалить</button>
+    formComment.id
+  }">Удалить</button>
   <div class="comment-footer">
     <div class="likes">
       <span class="likes-counter">${formComment.likes}</span>
@@ -51,9 +52,10 @@ export const renderFormComments = ({ formComments }) => {
   const appHtml = `<div class="container">
 <ul id = "list-comment" class="comments">${commentHtml}</ul>
 ${
-  user? `
+  token
+    ? `
 <div class="add-form" id="add-form">
-<input type="text" class="add-form-name" placeholder="Введите ваше имя"  id="name-input" value ="${user.name}" readonly/>
+<input type="text" class="add-form-name" placeholder="Введите ваше имя"  id="name-input" value ="${user}" readonly/>
 <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4" id="comment-input"></textarea>
 <div class="add-form-row">
     <button class="add-form-button" id="add-button">Написать</button>
@@ -131,15 +133,18 @@ ${
       }
 
       //Скрываем форму, показываем лоадер
-      hideForm.style.display = "none";
       loading.style.display = "flex";
-
+      hideForm.style.display = "none";
+      
+      
       const fetchPostPromise = () => {
         postTodo({
           text: textInputElement.value,
           name: nameInputElement.value,
         })
           .then(() => {
+            
+            buttonElement.textContent = "Загружается"
             return fetchGetPromise();
           })
           .then(() => {
@@ -162,7 +167,7 @@ ${
           });
       };
       fetchPostPromise();
-      renderFormComments({ formComments });
+      // renderFormComments({ formComments });
     });
   } else {
     const loginButtonElement = document.getElementById("login-button");
