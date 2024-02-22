@@ -1,9 +1,11 @@
 import { sanitazedHtml } from "./sanitazedHtml.js";
+import { getUserTokenFromLocalStorage } from "./localStorage.js";
 const baseURL = "https://wedev-api.sky.pro/api/v2/karpova-julia/comments";
 const userURL = "https://wedev-api.sky.pro/api/user/login";
 const regUser = "https://wedev-api.sky.pro/api/user";
 
-export let token;
+export let token = getUserTokenFromLocalStorage() ?? null;
+console.log(token);
 export const setToken = (newToken) => {
   token = newToken;
 };

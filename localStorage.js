@@ -1,10 +1,27 @@
 export function saveToLocalStorage(user) {
-  window.localStorage.setItem("user", JSON.stringify(user));
+  window.localStorage.setItem("user", JSON.stringify(user.token));
+  window.localStorage.setItem("name", JSON.stringify(user.name));
+  
+  console.log(user);
 }
-export function getUserFromLocalStorage() {
-  const userJSON = localStorage.getItem("user");
+export function getUserNameFromLocalStorage() {
+  const userNameJSON = localStorage.getItem("name");
+  if (userNameJSON === null){
+    return undefined;
+  }
 
-  if (userJSON === null) {
+  // Если вдруг в хранилище оказался невалидный JSON предохраняемся от этого
+  try {
+    return JSON.parse(userNameJSON);
+  } catch (e) {
+    localStorage.removeItem("user");
+    return undefined;
+  }
+}
+
+export function getUserTokenFromLocalStorage() {
+  const userJSON = localStorage.getItem("user");
+  if (userJSON === null){
     return undefined;
   }
 

@@ -1,18 +1,19 @@
 import { getTodos, likeTodo} from "./api.js";
 import { renderFormComments } from "./renderFormComments.js";
-import { getUserFromLocalStorage, saveToLocalStorage } from "./localStorage.js";
+import { getUserNameFromLocalStorage, saveToLocalStorage } from "./localStorage.js";
 import { format } from "date-fns";
 
 const hidePreloader = document.getElementById("preload");
 
 
-export let user = null;
- //export let user = getUserFromLocalStorage();
+//export let user = null;
+ export let user = getUserNameFromLocalStorage() ?? null;
+
 export const setUser = (newUser) => {
   user = newUser;
 
 }
-
+console.log(user);
 let formComments = [];
 
 export const fetchGetPromise = () => {
@@ -79,4 +80,4 @@ export const  initEventListeners = () => {
 });
 }
 
-console.log("It works1!");
+console.log("It works!");
